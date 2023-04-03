@@ -1,0 +1,129 @@
+
+<head>
+
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800;900&display=swap"
+    rel="stylesheet">
+
+    <!-- Css Styles -->
+    <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="css/elegant-icons.css" type="text/css">
+    <link rel="stylesheet" href="css/magnific-popup.css" type="text/css">
+    <link rel="stylesheet" href="css/nice-select.css" type="text/css">
+    <link rel="stylesheet" href="css/owl.carousel.min.css" type="text/css">
+    <link rel="stylesheet" href="css/slicknav.min.css" type="text/css">
+    <link rel="stylesheet" href="css/style.css" type="text/css">
+</head>
+
+<div class="xl ">
+    <!-- Account page navigation-->
+    <div class="offcanvas-menu-overlay"></div>
+    <div class="offcanvas-menu-wrapper">
+        <div class="offcanvas__option">
+            <div class="offcanvas__links">
+                <a href="#">Sign in</a>
+                <a href="#">FAQs</a>
+            </div>
+            <div class="offcanvas__top__hover">
+                <span>Usd <i class="arrow_carrot-down"></i></span>
+                <ul>
+                    <li>USD</li>
+                    <li>EUR</li>
+                    <li>USD</li>
+                </ul>
+            </div>
+        </div>
+        <div class="offcanvas__nav__option">
+            <a href="#" class="search-switch"><img src="img/icon/search.png" alt=""></a>
+            <a href="#"><img src="img/icon/heart.png" alt=""></a>
+            <a href="#"><img src="img/icon/cart.png" alt=""> <span>0</span></a>
+            <div class="price">$0.00</div>
+        </div>
+        <div id="mobile-menu-wrap"></div>
+        <div class="offcanvas__text">
+            <p>Free shipping, 30-day return or refund guarantee.</p>
+        </div>
+    </div>
+    <!-- Offcanvas Menu End -->
+
+    <!-- Header Section Begin -->
+    <header class="header">
+        <div class="header__top">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6 col-md-7">
+                        <div class="header__top__left">
+                            
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-5">
+                        <div class="header__top__right">
+                            <div class="header__top__links">
+                              
+                                <a href="#">FAQs</a>
+                            </div>
+                           
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-3">
+                    <div class="header__logo">
+                        <a href="./index.html"><img src="img/logo.png" alt=""></a>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6">
+                    <nav class="header__menu mobile-menu">
+                        <ul>
+                            <li class="active"><a href="./index.html">Home</a></li>
+                            <li><a href="http://localhost:3000/shop">Shop</a></li>
+                            <li><a href="http://localhost:3000/about">About Us</a></li>
+                            <li><a href="http://localhost:3000/blog">Blog</a></li>
+                            <li><a href="http://localhost:3000/contact">Contacts</a></li>
+                        </ul>
+                    </nav>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="header__nav__option">
+                        <a href="#" class="search-switch"><img src="img/icon/search.png" alt=""></a>
+                        <a href="http://localhost:3000/wishlist"><img src="img/icon/heart.png" alt=""></a>
+                        <a href="http://localhost:3000/cart"><img src="img/icon/cart.png" alt=""> <span>0</span></a>
+                         <a href="http://localhost:3000/checkout"><div class="price"><i class="fa-regular fa-credit-card"></i></div></a>
+                        <a href="http://localhost:3000/profile"><div class="price"> <i class="fa-regular fa-user"></i></div></a>
+                    </div>
+                </div>
+            </div>
+            <div class="canvas__open"><i class="fa fa-bars"></i></div>
+        </div>
+    </header>
+<div class="row  ">
+{{#each addressPage }}
+{{#each this.address}}
+<div class=" col-3 card bg-light mb-3  text-center ms-5 mt-5"  >
+ 
+  
+  <p>{{name}}</p>
+ <p>{{state}}</p>
+  <p>{{city}}</p>
+<p>{{country}}</p>
+   <p>{{postalcode}}</p>
+   <br>
+   <br>
+
+
+   
+   <a href="/savedAddress/{{@index}}"> <button type="submit" style="width: 5rem;" class="btn btn-success ms-2">Click</button></a>
+   <br>
+   <a href="/editExstAddress"><button type="button" style="width: 5rem;" class="btn btn-primary">Edit</button></a>
+   <br>
+   <a href="/deleteAddress/{{id}}"><button type="button" style="width: 5rem;" class="btn btn-dark">Delete</button></a>
+  
+    <p></p>
+   
+  </div>
+{{/each}}
+{{/each}}
+</div>
