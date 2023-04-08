@@ -152,7 +152,7 @@
     <section class="checkout spad">
         <div class="container">
             <div class="checkout__form">
-                <form id="checkout-form" action="" method="">
+                <form id="checkout-form">
                     <div class="row">
                         <a href="http://localhost:3000/userAddress"><button type="button"
                                 class="btn btn-dark">Address</button></a>
@@ -169,6 +169,7 @@
                                 </div>
 
                             </div>
+                           
                             <div class="col-md-6 checkout__input">
                                 <p>HouseName<span>*</span></p>
                                 <input type="text" name="housename" value="{{addressDetail.name}}">
@@ -201,7 +202,7 @@
                                     </div>
                                 </div>
                             </div>
-                            {{!-- {{#each user1}} --}}
+                          
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="checkout__input">
@@ -216,11 +217,6 @@
                                     </div>
                                 </div>
                             </div>
-
-
-
-
-
                         </div>
                         <div class="col-lg-4 col-md-6">
                             <div class="checkout__order">
@@ -233,16 +229,19 @@
 
                                 </ul>
                                 {{/each}}
+                                
                                 <ul class="checkout__total__all">
 
                                     <li>Grand Total <span>{{grand_Total}}</span></li>
                                 </ul>
 
-                 
+
+
+             
   <input type="radio" id="COD" name="paymentmethod" value="COD">
-  <label for="payment">COD (Cash on Delivery)</label><br></dir>  
+  <label for="payment"></label>COD<br>
   <input type="radio" id="onlinepayment" name="paymentmethod" value="onlinepayment">
-  <label for="payment">Online Payment</label><br>
+  <label for="payment"></label>onlinepayment<br>
 
 
 
@@ -268,6 +267,37 @@
                 </form>
             </div>
         </div>
+
+       
+
+<div class="row  ">
+{{#each addressPage1 }}
+
+<div class=" col-3 card bg-light mb-3  text-center ms-5 mt-5"  >
+
+  
+  <p>{{address.housename}}</p>
+ <p>{{state}}</p>
+  <p>{{city}}</p>
+<p>{{country}}</p>
+   <p>{{postalcode}}</p>
+   <br>
+   <br>
+
+
+   
+   <a href="/savedAddress/{{@index}}"> <button type="submit" style="width: 5rem;" class="btn btn-success ms-2">Click</button></a>
+   <br>
+   <a href="/editExstAddress"><button type="button" style="width: 5rem;" class="btn btn-primary">Edit</button></a>
+   <br>
+   <a href="/deleteAddress/{{id}}"><button type="button" style="width: 5rem;" class="btn btn-dark">Delete</button></a>
+  
+    <p></p>
+  </div>
+{{/each}}
+
+</div>
+
     </section>
     <!-- Checkout Section End -->
 
@@ -311,7 +341,7 @@
                         <h6>NewLetter</h6>
                         <div class="footer__newslatter">
                             <p>Be the first to know about new arrivals, look books, sales & promos!</p>
-                            <form action="#">
+                            <form action="">
                                 <input type="text" placeholder="Your email">
                                 <button type="submit"><span class="icon_mail_alt"></span></button>
                             </form>
@@ -363,6 +393,7 @@
 </body>
 
 <script>
+    
     $("#checkout-form").submit((e) => {
         e.preventDefault()
         $.ajax({
@@ -371,11 +402,10 @@
             data: $("#checkout-form").serialize(),
             success: (response) => {
               
-                if (response.status) {
-                    location.href = "/placeOrder"
-
+                if (response.status==true) {
+                    razorpayPayment(response.order)
                 } else {
-                    razorpayPayment(response)
+                    location.href = "/placeOrder"
                 }
             }
         })
@@ -384,13 +414,14 @@
     function razorpayPayment(order) {
         var options = {
             "key": "rzp_test_eP5eeGbQGldpDx", // Enter the Key ID generated from the Dashboard
-            "amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+            "amount": order.amount,// Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
             "currency": "INR",
             "name": "Male wardrobe", //your business name
             "description": "Test Transaction",
             "image": "https://example.com/your_logo",
             "order_id": order.id,
             "handler": function (response) {
+               
                
                 verifyPayment(response,order )
             }, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
@@ -415,9 +446,9 @@
             url:'/verifyPayment',
             data:{
                 payment,
-                order
+                order,
             },
-            method:"post"
+            method:"post",
         })
         
     }

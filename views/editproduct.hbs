@@ -230,11 +230,11 @@
       <input type="text" class="form-control" name="brand" value="{{edit.brand}}" placeholder="Brand">
     </div>
      <p class="text-danger"></p>
-    <div class="col">
+    {{!-- <div class="col">
       
          <label for="">Image</label>
       <input type="file" id="image" multiple class="form-control" src="/productimages/{{image}}" value="{{edit.image}}" name="image"  placeholder="Uplode image" required>
-    </div>
+    </div> --}}
     </div>
       <div class="row">
        <div class="col ">
@@ -244,8 +244,21 @@
      <p class="text-danger"></p>
     
 
+    <div class="row" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(5rem, 1fr)); grid-gap: .1rem;">
+  {{#each edit.image}}
+    <div class="col" style="width: 8rem; height: 10rem;">
+      <div>
+        <img class="col" style="width: 8rem; height: 10rem;" src="/productimages/{{[]}}" alt="">
+      </div>
+      <input multiple class="form-contorl" value="{{[]}}"  type="file" name="image" id="" placeholder="Upload image">
+    </div>
+  {{/each}}
+  <br>
+</div>
+<br>
 
- <button type="submit" class="btn btn-primary">Edit </button>
+ <button style="position: relative;top: 2rem;" type="submit" class="btn btn-primary">Edit </button>
+
 </form>
 
 <script src="javascripts/editProductValidation.js"></script>

@@ -1,0 +1,67 @@
+<table id="myTable" class="table align-middle mb-0 bg-white mt-5 pt-5">
+  <thead class="bg-light">
+    
+ 
+      <th>Image</th>
+      <th>Product Name </th>
+      <th>Product Price</th>
+       <th>Product Id</th>
+      
+      
+       <th>Action</th>
+      
+    </tr>
+  </thead>
+  <tbody>
+
+    {{#each productUserData}}
+    
+    
+    <tr>
+      <td>
+        <div class="d-flex align-items-center">
+          <div class="ms-3">
+            <p class="fw-bold mb-1"><img style="width: 5rem;" src="productimages/{{product.image.[0]}}" alt=""></p>
+            
+          </div>
+        </div>
+      </td>
+     
+      
+     <td>
+
+        <p class="text-muted mb-0">{{product.productName}}</p>
+      </td>
+      
+       <td>
+        <p class="text-muted mb-0">{{products.totalPrice}}</p>
+      </td>
+       <td>
+        <p class="text-muted mb-0">{{product.productId}}</p>
+      </td>
+      <td> <a href=""><button class="btn btn-primary">Details</button></a></td>
+
+  
+    
+     
+    </tr>
+  {{/each}}
+  </tbody>
+ 
+</table> 
+ 
+
+    <tr>
+<script >
+$(document).ready( function () {
+    $('#myTable').DataTable();
+})
+</script> 
+<script src="assets/js/main.js"></script>
+  <link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <link rel="stylesheet" href="css/style.css">
+  
+</body>

@@ -72,7 +72,7 @@
                                 <a href="#">FAQs</a>
                             </div>
                             <div class="header__top__hover">
-                                {{#if sessionName}}
+                                {{#if user}}
                             <a   href="/logout"><button class="btn-primary">Log out</button></a> 
                             {{else}}
                              <a   href="/login"><button class="btn-primary">Log in</button></a> 
@@ -207,7 +207,7 @@
                                 <h6 class="bannerText">{{defaultImage.bannername}}</h6>
                                 <h2 class="bannerText1">{{defaultImage.subname}}</h2>
                                 <p class="bannerText2">{{defaultImage.discription}}</p>
-                                <a href="#" class="primary-btn">Shop now <span class="arrow_right"></span></a>
+                                <a href="/shop" class="primary-btn">Shop now <span class="arrow_right"></span></a>
                                 <div class="hero__social">
                                     <a href="#"><i class="fa fa-facebook"></i></a>
                                     <a href="#"><i class="fa fa-twitter"></i></a>
@@ -228,7 +228,7 @@
                                 <h6 class="bannerText5">{{bannername}}</h6>
                                 <h2 class="bannerText4">{{subname}}</h2>
                                 <p class="bannerText3">{{discription}}</p>
-                                <a href="#" class="primary-btn">Shop now <span class="arrow_right"></span></a>
+                                <a href="/shop" class="primary-btn">Shop now <span class="arrow_right"></span></a>
                                 <div class="hero__social">
                                     <a href="#"><i class="fa fa-facebook"></i></a>
                                     <a href="#"><i class="fa fa-twitter"></i></a>

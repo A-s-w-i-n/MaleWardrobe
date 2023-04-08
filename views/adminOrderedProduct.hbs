@@ -155,9 +155,14 @@
  
       <th>Image</th>
       <th>Product Name </th>
-      <th>Product Price</th>
+      
        <th>Product Id</th>
       
+      <th>Delivery Address</th>
+      <th>Product Price</th>
+      <th>Ordered Date</th>
+      <th>Delivery Date</th>
+      <th>Payment Method</th>
       
        <th>Action</th>
       
@@ -166,6 +171,7 @@
   <tbody>
 
     {{#each productData}}
+    
     
     
     <tr>
@@ -183,15 +189,50 @@
         <p class="text-muted mb-0">{{product.productName}}</p>
       </td>
       
-       <td>
-        <p class="text-muted mb-0">{{products.totalPrice}}</p>
-      </td>
+      
+      
+    
+      
+      
        <td>
         <p class="text-muted mb-0">{{product.productId}}</p>
       </td>
-      <td><a href=""><button class="btn btn-primary">Details</button></a></td>
-
+{{#each ../productDataDetails}}
+       <td>
       
+        <p class="text-muted mb-0">{{deliveryAddress.housename}},{{deliveryAddress.postalCode}},
+          {{deliveryAddress.city}}.{{deliveryAddress.state}},{{deliveryAddress.country}}</p>
+     
+      </td>
+       <td>
+        
+        <p class="text-muted mb-0">{{products.totalPrice}}</p>
+        
+      </td>
+       <td>
+        
+        <p class="text-muted mb-0">{{date}}</p>
+        
+      </td>
+       <td>
+        
+        <p class="text-muted mb-0">{{deliveryDate}}</p>
+        
+      </td>
+       <td>
+        
+        <p class="text-muted mb-0">{{paymentMethod}}</p>
+        
+      </td>
+      {{/each}}
+    
+     
+      <td><a href="/orderStatus/{{_id}}"><button name="confirm" class="btn btn-primary">Confirm </button></a></td>
+   
+
+
+
+    
       
     
      

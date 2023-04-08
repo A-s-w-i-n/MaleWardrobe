@@ -24,7 +24,12 @@ const userSchema=new mongoose.Schema({
     status:{
         type:Boolean,
         require:true
+    },
+    usedCoupon:{
+        type:String,
+        require:true
     }
+
 })
 
 

@@ -1,0 +1,74 @@
+<div class="container rounded bg-white mt-5">
+        <div class="row">
+            <form action="/updateEdit" method="post">
+            
+            <div class="col-md-8">
+                <div class="p-3 py-5">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                       
+                        <h6 class="text-right">Edit Profile</h6>
+                    </div>
+                    {{#each  couponupdate}}
+                    
+                  
+                    <div class="row mt-3">
+                        <div class="col-md-6"><input type="text" class="form-control" name="couponcode" placeholder="address" value="{{couponCode}}"></div>
+                        
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6"><input type="text" class="form-control" name="discountprice" placeholder="Bank Name" value="{{discountPrice}}"></div>
+                        
+                    </div>
+                     </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6"><input type="date" class="form-control" name="createdate" placeholder="Bank Name" value="{{createDate}}"></div>
+                        
+                    </div>
+                     </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6"><input type="text" class="form-control" name="minimumprice" placeholder="Bank Name" value="{{MinimumPrice}}"></div>
+                        
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6"><input type="date" class="form-control" name="expiredate" placeholder="Bank Name" value="{{expireDate}}"></div>
+                        
+                        
+                    </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6"><input type="text" class="form-control" name="discounttype" placeholder="Bank Name" value="{{discountType}}"></div>
+                        {{/each}}
+                        
+                    </div>
+                    <div class="mt-5 text-right"><a href=""><button  class="btn btn-primary profile-button " type="submit">Update Coupon</button></a></div>
+                </div>
+            </div>
+            </form>
+        </div>
+    </div>
+    <style>
+        body {
+  background: #ffffff;
+}
+
+.form-control:focus {
+  box-shadow: none;
+  border-color: #ffffff;
+}
+
+.profile-button {
+  background: #BA68C8;
+  box-shadow: none;
+  border: none;
+}
+
+=
+
+
+.profile-button:active {
+  background: #ffffff;
+  box-shadow: none;
+}
+
+
+    </style>

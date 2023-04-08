@@ -21,7 +21,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(fileuplode())
+app.use(fileuplode({
+  useTempFiles : true,
+  tempFileDir : __dirname + '/public/temp/'
+}))
 
 app.use('/', indexRouter);
 app.use('/', usersRouter);

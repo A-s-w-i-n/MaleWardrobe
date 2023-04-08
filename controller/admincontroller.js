@@ -8,10 +8,13 @@ const userinfo = require('../model/usermodel').usersignin
 const orderinfo=require('../model/orderModal').orderManagement
 const bannerinfo=require('../model/bannerModel').addBanner
 const couponinfo=require('../model/couponModel').adminCoupon
-let id2
-let edit
-let categorymsg
-let productData
+ const {ObjectId}=require('mongodb')
+const sharp=require('sharp')
+const { response } = require('express')
+// let id2
+// let edit
+// let categorymsg
+// let productData
 require('dotenv').config()
 
 
@@ -20,7 +23,8 @@ const adminlogin = function (req, res, next) {
         
         res.render('adminlogin')
     } catch (error) {
-        console.log(error.message)
+        console.log(error)
+        next()
     }
 
 }
@@ -29,7 +33,8 @@ const adminhome =async function (req, res, next) {
         
         res.render('adminhome')
     } catch (error) {
-       
+        console.log(error)
+        next()
     }
 }
 const productadd = async function (req, res, next) {
@@ -38,7 +43,8 @@ const productadd = async function (req, res, next) {
         const subcategorynew = await subcategoryinfo.find({ status: true })
         res.render('addproduct', { categorynew, subcategorynew })
     } catch (error) {
-        console.log(error.message)
+        console.log(error)
+        next()
     }
 
 }
@@ -46,7 +52,8 @@ const adminlogout = function (req, res, next) {
     try {
         res.redirect('/admin')
     } catch (error) {
-        console.log(error.message)
+        console.log(error)
+        next()
     }
 }
 const productall = async function (req, res, next) {
@@ -55,7 +62,9 @@ const productall = async function (req, res, next) {
         res.render('allproducts', { addnew })
         
     } catch (error) {
-        console.log(error.message)
+        console.log(error)
+        next()
+
     }
 }
 const productdelete = async function (req, res, next) {
@@ -67,39 +76,55 @@ const productdelete = async function (req, res, next) {
         res.redirect('/allproducts')
         
     } catch (error) {
-        console.log(error.message)
+        console.log(error)
+        next()
     }
 }
 const productRedirct = async function (req, res, next) {
     try {
-        id2 = req.params.id
-        edit = await productinfo.findOne({ _id: id2 })
+       let id2 = req.params.id
+      let  edit = await productinfo.findOne({ _id: id2 })
+    
+      if(edit.image){
+        
+      }
+        req.session.id2=id2
+        req.session.edit=edit
         res.redirect('/editproduct')
     } catch (error) {
-        console.log(error.message)
+        console.log(error)
+        next()
     }
 }
 const productedit = async function (req, res, next) {
     try {
+        let updationImagesId=req.params.id
+        const edit=req.session.edit
         const categorynew = await categoryinfo.find({ status: true })
         const subcategorynew = await subcategoryinfo.find({ status: true })
+        const updationImages=await productinfo.find({_id:updationImagesId})
+
+       
         
     
-        res.render("editproduct", {edit, subcategorynew, categorynew })
+        res.render("editproduct", {edit, subcategorynew, categorynew,updationImages })
         
     } catch (error) {
-        console.log(error.message)
+        console.log(error)
+        next()
     }
 }
 
 const categoryadd = async function (req, res, next) {
     try {
+        let categorymsg=req.session.categorymsg
         const categorynew = await categoryinfo.find()
         res.render('addcategory', { categorynew,categorymsg })
         categorymsg=null
         
     } catch (error) {
-        console.log(error.message)
+        console.log(error)
+        next()
     }
 }
 const addsubcategory = async function (req, res, next) {
@@ -108,7 +133,8 @@ const addsubcategory = async function (req, res, next) {
         res.render('subcategory', { subcategorynew })
         
     } catch (error) {
-        console.log(error.message)
+        console.log(error)
+        next()
     }
 
 }
@@ -119,7 +145,8 @@ const manageuser = async function (req, res, next) {
         const finduser = await userinfo.find()
         res.render('usermanage', { finduser })
     } catch (error) {
-        console.log(error.message)
+        console.log(error)
+        next()
     }
 }
 const block = async function (req, res, next) {
@@ -134,7 +161,8 @@ const block = async function (req, res, next) {
         res.redirect('/usermanage')
         
     } catch (error) {
-        console.log(error.message)
+        console.log(error)
+        next()
     }
 }
 const unblock = async function (req, res, next) {
@@ -144,7 +172,8 @@ const unblock = async function (req, res, next) {
         res.redirect('/usermanage')
         
     } catch (error) {
-        console.log(error.message)
+        console.log(error)
+        next()
     }
 }
 // const deleteOne = async function (req, res, next) {
@@ -154,7 +183,7 @@ const unblock = async function (req, res, next) {
 //         res.redirect('/usermanage')
         
 //     } catch (error) {
-//         console.log(error.message)
+//         console.log(error)
 //     }
 // }
 
@@ -172,6 +201,7 @@ const adminloginvalidationpost = async function (req, res, next) {
             res.redirect('/admin')
         } else {
             if (data.password == adminvalidate.password) {
+                req.session.admin=adminvalidate
                 res.redirect('/adminhome')
             } else {
                 res.redirect('/admin')
@@ -179,7 +209,8 @@ const adminloginvalidationpost = async function (req, res, next) {
         }
         
     } catch (error) {
-        console.log(error.message)
+        console.log(error)
+        next()
     }
 
 
@@ -203,7 +234,15 @@ const newproductpost = async function (req, res, next) {
     
         if (imagesize) {
             for (i = 0; i < image.length; i++) {
-                image[i].mv('./public/productimages/' + addproductdata.productId + i + '.jpg')
+
+                
+                let path = "" + image[i].tempFilePath
+                console.log(path);
+                await sharp(path)
+                  .rotate()
+                  .resize(1000, 1500)
+                  .jpeg({ mozjpeg: true })
+                  .toFile('./public/productimages/' + addproductdata.productId + i + '.jpg')
                 image[i] = addproductdata.productId + i + '.jpg'
             }
             addproductdata.image = image
@@ -220,12 +259,14 @@ const newproductpost = async function (req, res, next) {
     
         res.redirect('/allproducts')
     } catch (error) {
-        console.log(error.message)
+        console.log(error)
+        next()
     }
 }
 
 const editexistproductpost = async function (req, res, next) {
     try {
+         const id2=req.session.id2
         
         id = req.params.id
         let items = req.body
@@ -235,8 +276,20 @@ const editexistproductpost = async function (req, res, next) {
         image = req.files.image
         console.log(req.files);
         let imagesize = image.length
-    
-    
+        response.status=true
+        // const productobj=req.files
+        // console.log(productobj);
+        // if(productobj){
+        //     count=Object.keys(productobj).length
+        //     console.log(count);
+        //     for(i=0;i<count;i++){
+        //         imageId=Object.keys(productobj)[i]
+        //         img=Object.values(productobj)[i]
+        //         console.log(img);
+        //     }
+        // }
+
+        
         if (imagesize > 1) {
             for (i = 0; i < image.length; i++) {
                 image[i].mv('./public/productimages/' + id + i + '.jpg')
@@ -265,23 +318,27 @@ const editexistproductpost = async function (req, res, next) {
         })
         res.redirect('/allproducts')
     } catch (error) {
-        console.log(error.message)
+        console.log(error)
+        next()
     }
 }
 const newcategoryaddpost = async function (req, res, next) {
     try {
         
         const addcategorynew = req.body
-      const  categoryExist=await categoryinfo.findOne({name:req.body.category})
-            if(categoryExist){
+        const  categoryExist=await categoryinfo.findOne({name:req.body.category})
+        var results = new RegExp('[\\?&]' + req.body.category + '=([^&#]*)', "i")
+            if(categoryExist||results){
                 res.redirect('/addcategory')
-               categorymsg="Category alredy exist"
+             let  categorymsg="Category alredy exist"
+             req.session.categorymsg=categorymsg
             }else{
                  categoryinfo.insertMany({ name: req.body.category, status: true })
             res.redirect('/addcategory')
             }
     } catch (error) {
-        console.log(error.message)
+        console.log(error)
+        next()
 
     }
  
@@ -296,7 +353,8 @@ const newsubcategorypost = async function (req, res, next) {
         res.redirect('/subcategory')
         
     } catch (error) {
-        console.log(error.message)
+        console.log(error)
+        next()
     }
 }
 const desable = async function (req, res, next) {
@@ -306,7 +364,8 @@ const desable = async function (req, res, next) {
         await categoryinfo.updateOne({ _id: desableStatus }, { $set: { status: false } })
         res.redirect('/addcategory')
     } catch (error) {
-        console.log(error.message)
+        console.log(error)
+        next()
 
     }
 }
@@ -318,7 +377,8 @@ const enable = async function (req, res, next) {
     
         res.redirect('/addcategory')
     } catch (error) {
-        console.log(error.message)
+        console.log(error)
+        next()
     }
 }
 const subdesable = async function (req, res, next) {
@@ -328,7 +388,8 @@ const subdesable = async function (req, res, next) {
         await subcategoryinfo.updateOne({ _id: subdesableStatus }, { $set: { status: false } })
         res.redirect('/subcategory')
     } catch (error) {
-        console.log(error.message)
+        console.log(error)
+        next()
     }
 }
 const subenable = async function (req, res, next) {
@@ -338,7 +399,8 @@ const subenable = async function (req, res, next) {
         await subcategoryinfo.updateOne({ _id: subenableStatus }, { $set: { status: true } })
         res.redirect('/subcategory')
     } catch (error) {
-        console.log(error.message)
+        console.log(error)
+        next()
     }
 }
 const orderManagemnt=async function(req,res,next){
@@ -348,7 +410,8 @@ const orderManagemnt=async function(req,res,next){
         
         res.render('adminOrderManagemant',{findUserDetail})
     } catch (error) {
-        console.log(error.message)
+        console.log(error)
+        next()
     }
     
 
@@ -356,9 +419,13 @@ const orderManagemnt=async function(req,res,next){
 const adminOrderView=function(req,res,next){
     try {
         const productData=req.session.productData
-        res.render("adminOrderedProduct",{productData})
+        const productDataDetails=req.session.productDataDetails
+        let orderConfirmed=req.session.orderConfirmed
+        
+        res.render("adminOrderedProduct",{productData,productDataDetails,orderConfirmed})
     } catch (error) {
-        console.log(error.message)
+        console.log(error)
+        next()
     }
     
 }
@@ -366,19 +433,22 @@ const adminOrderView=function(req,res,next){
 const orderProductDetail=async function(req,res,next){
     try {
         
-        
-        const orderId=req.params.id
+        const orderedId=req.query._id
+        const orderId=req.query.orderedUser
         req.session.orderId=orderId
     
-    
-     const    productData=await orderinfo.aggregate([{$unwind:"$products"},{$match:{orderedUser:orderId}},{$project:{product:"$products.product"}}])
+        const productDataDetails=await orderinfo.aggregate([{$unwind:"$products"},{$match:{orderedUser:orderId}},{$match:{_id:new ObjectId(orderedId)}}])
+
+    req.session.productDataDetails=productDataDetails
+     const  productData=await orderinfo.aggregate([{$unwind:"$products"},{$match:{orderedUser:orderId}},{$project:{product:"$products.product"}},{$match:{_id:new ObjectId(orderedId)}}])
     req.session.productData=productData
          console.log(productData);
     
     
         res.redirect("/adminOrderedProduct")
     } catch (error) {
-        console.log(error.message)
+        console.log(error)
+        next()
     }
 }
 const bannerAdmin=async function(req,res,next){
@@ -408,7 +478,8 @@ const bannerAdmin=async function(req,res,next){
     
         res.redirect('/Banner')
     } catch (error) {
-        console.log(error.message)
+        console.log(error)
+        next()
     }
 }
         
@@ -427,21 +498,70 @@ const enableBanner=async function(req,res,next){
     res.redirect("/Banner")
 }
 const adminCoupon=async function(req,res,next){
- 
-    const couponData=await couponinfo.find()
-
-    res.render('coupon',{couponData})
+    try {
+        
+           const couponData=await couponinfo.find()
+       
+           res.render('coupon',{couponData})
+        
+    } catch (error) {
+        console.log(error)
+        next()
+    }
 }
 const addCoupon=async function(req,res,next){
-const couponDetaile=req.body
-console.log(couponDetaile);
-await  couponinfo.insertMany([couponDetaile])
-
-    res.redirect('/coupon')
+    try {
+        
+        const couponDetaile=req.body
+        console.log(couponDetaile);
+        await  couponinfo.insertMany([couponDetaile])
+        
+            res.redirect('/coupon')
+    } catch (error) {
+        console.log(error)
+        next()
+    }
 }
-   
-    
+const statusOrder=async function(req,res,next){
 
+    const statusOrder=req.params.id
+
+    
+const orderConfirmed=await orderinfo.updateOne({_id:statusOrder},{$set:{orderStatus:"Order Confirmed"}})
+
+
+req.session.orderConfirmed=orderConfirmed
+
+    res.redirect('/adminOrderedProduct')
+  }
+
+ const  editCoupon=async function(req,res,next){
+
+    let coupondatas=req.params.id
+    req.session.coupondatas=coupondatas
+
+const couponupdate=await couponinfo.find({_id:coupondatas})
+
+
+
+
+    res.render('couponEdit',{couponupdate})
+}
+    
+const proceedCouponUpdate=async function(req,res,next){
+let coupondatas=req.session.coupondatas
+    await couponinfo.updateOne({_id:coupondatas},{$set:{
+
+   couponCode:req.body.couponcode,
+   discountPrice:req.body.discountprice,
+   createDate:req.body.createdate,
+   MinimumPrice:req.body.minimumprice,
+   expireDate:req.body.expiredate,
+   discountType:req.body.discounttype
+
+    }})
+    res.redirect('/coupon')
+  }
 
 
 
@@ -477,5 +597,8 @@ module.exports = {
     desableBanner,
     enableBanner,
     adminCoupon,
-    addCoupon
+    addCoupon,
+    statusOrder,
+    editCoupon,
+    proceedCouponUpdate
 }

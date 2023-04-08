@@ -15,17 +15,20 @@ const orderinfo = require('../model/orderModal').orderManagement
 const bannerinfo = require('../model/bannerModel').addBanner
 const couponinfo = require('../model/couponModel').adminCoupon
 const Razorpay = require('razorpay')
+const crypto = require('crypto')
+const { ObjectId } = require('mongodb')
+let orders
+let hmac = crypto.createHmac('sha256', 'process.env.RAZORPAY_SECRET_KEY')
 require('dotenv').config()
 let random
-let selectone
-let errmsg
-let productview
 let user
-let sessionName
-let msg
-let addressPage
-let productCart
-let grand_Total
+let data
+// let sessionName
+// let msg
+// let addressPage
+// let productCart
+
+
 
 
 
@@ -40,12 +43,13 @@ const usersignup = function (req, res, next) {
     res.render('signup')
   } catch (error) {
 
-    console.log(error.message)
+    console.log(error)
+    next()
   }
 }
 const userlogin = async function (req, res, next) {
   try {
-
+    let msg = req.session.msg
     user = req.session.user
     // if (user) {
     //   res.redirect('/')
@@ -57,53 +61,113 @@ const userlogin = async function (req, res, next) {
 
     // }
   } catch (error) {
-    console.log(error.message)
+    console.log(error)
+    next()
   }
 
 }
 const userhome = async function (req, res, next) {
   try {
-    let newProduct = await productinfo.find()
+    let user = req.session.user
+    let newProduct = await productinfo.find().limit(4)
     let addBanner = await bannerinfo.find().skip(1).toArray()
     let defaultImage = await bannerinfo.find().limit(1).toArray()
 
     console.log(addBanner);
 
     defaultImage = defaultImage[0]
-    res.render('userhome', { sessionName, newProduct, user, addBanner, defaultImage })
+    res.render('userhome', { newProduct, user, addBanner, defaultImage })
 
 
 
   } catch (error) {
-    console.log(error.message)
+    console.log(error)
+    next()
   }
 }
 
 const usershop = async function (req, res, next) {
   try {
-    
+
+    let selectone = req.session.selectone
+    let lowToHighSort = req.session.lowToHighSort
+    let highToLowSort = req.session.highToLowSort
+    let newestFirst = req.session.newest
+    let oldestSort = req.session.oldest
+    let priceSortOne = req.session.priceSortOne
+    let priceSortTwo = req.session.priceSortTwo
+    let priceSortThree = req.session.priceSortThree
+    let priceSortFour=req.session.priceSortFour
 
     let categoryFetch = await categoryinfo.find({ status: true })
 
+
+
+    const categoryProduct = await productinfo.find()
+
+
+
     if (selectone == null || selectone == "allcategory") {
       let addnew = await productinfo.find()
-      res.render('shop', { addnew, categoryFetch })
+      if (priceSortOne) {
+        addnew = priceSortOne
+        req.session.priceSortOne = null
+      }
+      if (priceSortTwo) {
+        addnew = priceSortTwo
+        req.session.priceSortTwo
+      }
+      if (priceSortThree) {
+        addnew = priceSortThree
+        req.session.priceSortThree = null
+      }
+      if(priceSortFour){
+        addnew=null
+        req.session.priceSortFour=null
+      }
+      if (lowToHighSort) {
+        addnew = lowToHighSort
+        req.session.lowToHighSort = null
+
+      }
+      if (highToLowSort) {
+        addnew = highToLowSort
+        req.session.highToLowSort = null
+
+      }
+      if (newestFirst) {
+        addnew = newestFirst
+        req.session.newest = null
+      }
+      if (oldestSort) {
+        addnew = oldestSort
+        req.session.oldest = null
+      }
+      
+
+      req.session.addnew = addnew
+
+      res.render('shop', { addnew, categoryFetch, lowToHighSort, highToLowSort })
     } else {
+
       const addnew = await productinfo.find({ category: selectone })
-      res.render('shop', { addnew, categoryFetch })
+      res.render('shop', { addnew, categoryFetch, lowToHighSort, highToLowSort })
     }
   } catch (error) {
-    console.log(error.message)
+    console.log(error)
+    next()
 
   }
 }
 const selectcategory = async function (req, res, next) {
   try {
-    selectone = req.params.category
+    let selectone = req.params.category
+    req.session.selectone = selectone
     res.redirect('/shop')
 
   } catch (error) {
-    console.log(error.message)
+    console.log(error)
+    next()
   }
 }
 const userabout = function (req, res, next) {
@@ -111,7 +175,8 @@ const userabout = function (req, res, next) {
     res.render('about')
 
   } catch (error) {
-    console.log(error.message)
+    console.log(error)
+    next()
   }
 }
 const userblog = function (req, res, next) {
@@ -119,7 +184,8 @@ const userblog = function (req, res, next) {
     res.render('blog')
 
   } catch (error) {
-    console.log(error.message)
+    console.log(error)
+    next()
   }
 }
 const usercontact = function (req, res, next) {
@@ -127,7 +193,8 @@ const usercontact = function (req, res, next) {
 
     res.render('contact')
   } catch (error) {
-    console.log(error.message)
+    console.log(error)
+    next()
   }
 }
 const userwishlist = function (req, res, next) {
@@ -135,16 +202,18 @@ const userwishlist = function (req, res, next) {
     res.render('wishlist')
 
   } catch (error) {
-    console.log(error.message)
+    console.log(error)
+    next()
   }
 }
 const usercart = async function (req, res, next) {
   try {
-
+    let couponId = req.session.coupon
 
     user = req.session.user.name
+    let stockmsg = req.session.stockmsg
     // if (user) {
-    productCart = await cartInfo.aggregate([
+    let productCart = await cartInfo.aggregate([
       {
 
         $match: { user: user }
@@ -163,16 +232,19 @@ const usercart = async function (req, res, next) {
       },
       { $project: { item: 1, quantity: 1, product: { $arrayElemAt: ['$products', 0] } } }
     ]).toArray()
+    req.session.productCart = productCart
+    console.log(productCart);
 
     for (var i = 0; i < productCart.length; i++) {
       totalPrice = productCart[i].quantity * productCart[i].product.price
       productCart[i].totalPrice = totalPrice
     }
-    grand_Total = 0
+    let grand_Total = 0
     for (i = 0; i < productCart.length; i++) {
       grand_Total += productCart[i].totalPrice
+      req.session.grand_Total = parseInt(grand_Total)
     }
-    const couponsId = req.session.coupon
+    let couponsId = req.session.coupon
 
     if (couponsId) {
       let couponVal = await couponinfo.find({ couponCode: couponsId })
@@ -185,23 +257,34 @@ const usercart = async function (req, res, next) {
       } else {
         console.log(couponVal);
         grand_Total -= couponVal[0].discountPrice
+        couponerr = "coupon addedd successfully"
+        couponerr = null
+
+        await userinfo.updateOne({ name: user }, { $addToSet: { usedCoupon: couponId } })
+
+        let couponTotal = couponVal[0].discountPrice
+
+        req.session.couponTotal = couponTotal
 
         console.log(grand_Total);
-
-
       }
-
-
     }
+
     const couponerror = req.session.couponError
 
+    let couponerror1 = req.session.couponerror1
+    couponerror1 = null
 
 
-    res.render('cart', { productCart, grand_Total, couponerror, couponerr })
+
+
+    res.render('cart', { productCart, grand_Total, couponerror, couponerr, couponerror1, stockmsg })
+    stockmsg = null
   }
   // }
   catch (error) {
-    console.log(error.message)
+    console.log(error)
+    next()
 
   }
 
@@ -209,10 +292,20 @@ const usercart = async function (req, res, next) {
 
 const usercheckout = async function (req, res, next) {
   try {
+    let grand_Total = req.session.grand_Total
+    let productCart = req.session.productCart
+    let couponTotal = req.session.couponTotal
+    let addressPage = req.session.passAdd
 
+    let passId2 = req.session.passId2
     // checkoutaProducts=req.params.id
     user = req.session.user.name
     const user1 = req.session.user
+
+
+
+
+
 
     if (user) {
       let userCheck = await addressinfo.findOne({ user: req.session.user.name })
@@ -223,17 +316,30 @@ const usercheckout = async function (req, res, next) {
         if (addressPage) {
           addressDetail = addressPage
           addressPage = null
+
         } else {
           addressDetail = userCheck.address[0]
-        }
-        grand_Total = 0
-        for (var i = 0; i < productCart.length; i++) {
-          totalPrice = productCart[i].quantity * productCart[i].product.price
-          productCart[i].totalPrice = totalPrice
-          grand_Total += totalPrice
-        }
 
-        res.render('checkout', { addressDetail, userCheck, productCart, grand_Total, user1 })
+        }
+        if (couponTotal) {
+          grand_Total = 0
+          for (var i = 0; i < productCart.length; i++) {
+            totalPrice = productCart[i].quantity * productCart[i].product.price
+            productCart[i].totalPrice = totalPrice
+            grand_Total += totalPrice - couponTotal
+          }
+        } else {
+
+          grand_Total = 0
+          for (var i = 0; i < productCart.length; i++) {
+            totalPrice = productCart[i].quantity * productCart[i].product.price
+            productCart[i].totalPrice = totalPrice
+            grand_Total += totalPrice
+          }
+        }
+        const paymentTotal = grand_Total
+        req.session.paymentTotal = paymentTotal
+        res.render('checkout', { addressDetail, userCheck, productCart, grand_Total, user1, addressPage })
 
       }
     } else {
@@ -242,19 +348,21 @@ const usercheckout = async function (req, res, next) {
     // const cartProductDetails=await productinfo.findOne({_id:checkoutaProducts})
   } catch (error) {
 
-    console.log(error.message)
+    console.log(error)
+    next()
 
   }
 
 }
 const userprofile = async function (req, res, next) {
   try {
-    const userProfile = req.session.user.name
+    let userProfile = req.session.user.name
     const profileDetail = await userinfo.find({ name: userProfile })
     res.render('profile', { profileDetail })
 
   } catch (error) {
-    console.log(error.message)
+    console.log(error)
+    next()
   }
 }
 
@@ -270,9 +378,10 @@ const usersignupval = async function (req, res, next) {
       status: true
     }
     random = Math.floor(Math.random() * 9000) + 10000
-    const phonenumber = req.body.phone
-    if (phonenumber) {
-      otpvalidation(phonenumber, random)
+    const email = req.body.email
+
+    if (email) {
+      otpvalidation(email, random)
     }
 
     let signupval = await userinfo.findOne({ name: data.name })
@@ -287,7 +396,7 @@ const usersignupval = async function (req, res, next) {
     }
   } catch (error) {
 
-    console.log(error.message)
+    console.log(error)
 
   }
 }
@@ -297,7 +406,8 @@ const userlogout = function (req, res, next) {
     res.redirect('/login')
 
   } catch (error) {
-    console.log(error.message)
+    console.log(error)
+    next()
   }
 }
 
@@ -315,60 +425,60 @@ const signupotp = function (req, res, next) {
     }
 
   } catch (error) {
-    console.log(error.message)
+    console.log(error)
+    next()
   }
 }
 
-const confirmotppost = function (req, res, next) {
+const confirmotppost = async function (req, res, next) {
   try {
-    const signupotp = req.body.signupotp
-    if (signupotp == random) {
+    if (req.body.signupotp == random) {
 
       userinfo.insertMany([data])
       req.session.user = data
       res.redirect('/')
-
-    }
-    else {
+    } else {
       res.redirect('/signupotp')
     }
-
   } catch (error) {
-    console.log(error.message)
+    console.log(error)
+    next()
   }
 
 }
 const userloginval = async function (req, res, next) {
-  try {
 
-    const userloginvalidation = {
-      name: req.body.name,
-      password: req.body.password
-    }
-    let userloginfo = await userinfo.findOne({ name: userloginvalidation.name })
 
-    let userstatus = await userinfo.findOne({name:userloginfo.name, status: false })
-    
-    if (userloginfo == null || userstatus) {
-      msg = "User is Blocked"
+  const userloginvalidation = {
+    name: req.body.name,
+    password: req.body.password
+  }
+  let userloginfo = await userinfo.findOne({ name: userloginvalidation.name })
 
+  let userstatus = await userinfo.findOne({ name: userloginfo.name, status: false })
+
+  if (userloginfo == null || userstatus) {
+    let msg = "User is Blocked"
+
+    req.session.msg = msg
+
+    res.redirect('/login')
+
+  } else {
+
+    if (userloginvalidation.password == userloginfo.password) {
+      req.session.user = userloginfo
+      sessionName = userloginfo.name
+
+      req.session.sessionName = sessionName
+
+      res.redirect('/')
+    } else {
       res.redirect('/login')
 
-    } else {
-
-      if (userloginvalidation.password == userloginfo.password) {
-        req.session.user = userloginfo
-        sessionName = userloginfo.name
-
-        res.redirect('/')
-      } else {
-        res.redirect('/login')
-
-      }
     }
-  } catch (error) {
-    console.log(error.message)
   }
+
 
 
 }
@@ -377,18 +487,21 @@ const loginphone = function (req, res, next) {
     res.render('loginnumber')
 
   } catch (error) {
-    console.log(error.message)
+    console.log(error)
+    next()
   }
 }
 const otplogin = function (req, res, next) {
 
   try {
+    let errmsg = req.session.errmsg
     res.render('loginotp', { errmsg })
     errmsg = null
 
   } catch (error) {
 
-    console.log(error.message)
+    console.log(error)
+    next()
 
   }
 
@@ -398,48 +511,56 @@ const loginuserone = function (req, res, next) {
 
     res.redirect('/loginnumber')
   } catch (error) {
-    console.log(error.message)
+    console.log(error)
+    next()
   }
 
 }
 const userphoneconfirmationpost = function (req, res, next) {
   try {
     random = Math.floor(Math.random() * 9000) + 10000
-    const userphonenumber = req.body.phone
+    const email = req.body.email
+    req.session.random = random
 
     if (userotpconfirmationpost) {
-      otpvalidation(userphonenumber, random)
+      otpvalidation(email, random)
       res.redirect('/loginotp')
     }
 
   } catch (error) {
-    console.log(error.message)
+    console.log(error)
+    next()
   }
 }
 const userotpconfirmationpost = function (req, res, next) {
   try {
     const loginotp = req.body.loginotp
+    const random = req.session.random
 
     if (loginotp == random) {
 
       res.redirect('/')
     } else {
       res.redirect('/loginotp')
-      errmsg = "invalid otp"
+      let errmsg = "invalid otp"
+      req.session.errmsg = errmsg
     }
 
   } catch (error) {
-    console.log(error.message)
+    console.log(error)
+    next()
 
   }
 }
 
 const productDetaile = async function (req, res, next) {
   try {
+    const productview = req.session.productview
 
     res.render('productDetailes', { productview })
   } catch (error) {
-    console.log(error.message)
+    console.log(error)
+    next()
   }
 
 
@@ -447,12 +568,15 @@ const productDetaile = async function (req, res, next) {
 const productAccsessget = async function (req, res, next) {
   try {
     const search = req.params.id
-    productview = await productinfo.find({ _id: search })
+    let productview = await productinfo.find({ _id: search })
+
+    req.session.productview = productview
 
     res.redirect('/productDetails')
 
   } catch (error) {
-    console.log(error.message)
+    console.log(error)
+    next()
 
   }
 }
@@ -464,7 +588,7 @@ const cartManage = async function (req, res, next) {
       res.redirect('/login')
     } else {
       const proId = req.params.id
-      const userId = req.session.user.name
+      let userId = req.session.user.name
       const proObj = {
         item: proId,
         quantity: 1
@@ -490,7 +614,8 @@ const cartManage = async function (req, res, next) {
       res.redirect('/cart')
     }
   } catch (error) {
-    console.log(error.message)
+    console.log(error)
+    next()
   }
 }
 const cartRemove = async function (req, res, next) {
@@ -500,15 +625,19 @@ const cartRemove = async function (req, res, next) {
     res.redirect('/cart')
 
   } catch (error) {
-    console.log(error.message)
+    console.log(error)
+    next()
   }
 }
 const changeQuantity = async function (req, res, next) {
+
+  let productCart = req.session.productCart
 
   try {
     user = req.session.user.name
     cartItem = req.body
     cartItem.count = parseInt(cartItem.count)
+
 
     for (i = 0; i < productCart.length; i++) {
       if (productCart[i]['item'] == cartItem.product) {
@@ -522,7 +651,9 @@ const changeQuantity = async function (req, res, next) {
     for (i = 0; i < cartQauntity.value.product.length; i++) {
       let cart = cartQauntity.value.product[i]
       const productData = await productinfo.findOne({ productId: cart.item })
+      req.session.productData = productData
       let quantity
+
       if (cart.item == cartItem.product) {
         quantity = cart.quantity + cartItem.count
       }
@@ -536,18 +667,40 @@ const changeQuantity = async function (req, res, next) {
         finalPrice: quantity * productData.price
       }
       cartElements.push(cartObj)
+      req.session.quantity = quantity
+
+    }
+    let productData = req.session.productData
+    let qaunt = req.session.quantity
+    let stock = productData.stock
+    console.log(stock);
+    console.log(qaunt);
+    if (qaunt <= stock) {
+
+      carterror = null
+
+
+    } else {
+      let stockmsg = "out of stock"
+      req.session.stockmsg = stockmsg
+
+
+
     }
 
 
     res.json({
       status: true,
       cartElements: cartElements,
+      stock: carterror
+
 
     })
 
   } catch (error) {
 
-    console.log(error.message)
+    console.log(error)
+    next()
 
   }
 }
@@ -557,7 +710,8 @@ const userCheckout = function (req, res, next) {
 
     res.redirect('/checkout')
   } catch (error) {
-    console.log(error.message)
+    console.log(error)
+    next()
   }
 
 }
@@ -566,11 +720,14 @@ const AddressManage = async function (req, res, next) {
   try {
     user = req.session.user.name
 
-    addressPage = await addressinfo.find({ user: user })
+    let addressPage = await addressinfo.find({ user: user })
+
+    req.session.addressPage = addressPage
     res.render('userAddress', { addressPage })
 
   } catch (error) {
-    console.log(error.message)
+    console.log(error)
+    next()
   }
 }
 
@@ -583,7 +740,7 @@ const userAddress = async function (req, res, next) {
     console.log(details);
 
 
-    userExt = await addressinfo.findOne({ user: user })
+    let userExt = await addressinfo.findOne({ user: user })
     if (userExt == null) {
 
       await addressinfo.insertMany([{ user: req.session.user.name, address: details }])
@@ -598,69 +755,90 @@ const userAddress = async function (req, res, next) {
     res.redirect('/userAddress')
   } catch (error) {
 
-    console.log(error.message)
+    console.log(error)
+    next()
   }
 }
 const savedAddress = async function (req, res, next) {
   try {
+    // let addressPage=req.session.addressPage
     user = req.session.user.name
-    passId = req.params.indexof
+    const passId = req.query.index
+    const passId2 = req.query.id
+    req.session.passId2 = passId2
 
-    let passAdd = await addressinfo.findOne({ user: user })
 
-    addressPage = passAdd.address[passId]
+
+    let passAdd = await addressinfo.aggregate([{ $match: { user: user } }, { $unwind: "$address" }, { $match: { "address.id": passId2 } }])
+    req.session.passAdd = passAdd
 
     res.redirect('/checkout')
 
   } catch (error) {
-    console.log(error.message)
+    console.log(error)
+    next()
   }
 }
-const placeorder = function (req, res, next) {
+const placeorder = async function (req, res, next) {
   try {
+
+    let productCart = req.session.productCart
+
+
+    for (i = 0; i < productCart.length; i++) {
+      let quant = -productCart[i].quantity
+      let proId = productCart[i].item
+      await productinfo.updateOne({ productId: proId }, { $inc: { stock: quant } })
+    }
     res.render('placeOrder')
 
   } catch (error) {
-    console.log(error.message)
+    console.log(error)
+    next()
   }
 }
 const proceed = async function (req, res, next) {
   try {
-
+    //  let grand_Total=req.session.grand_Total
+    let productCart = req.session.productCart
+    let paymentTotal = req.session.paymentTotal
     user = req.session.user.name
 
-    let status = req.body.paymentmethod === "COD" ? "Placed" : "Pending"
-
+    let status = req.body.paymentmethod === "COD" ? "Pending" : "waiting"
+    console.log(req.body);
 
     let delivery = {
 
       name: req.body.name,
       housename: req.body.housename,
-      city: req.body.city,
-      state: req.body.state,
-      country: req.body.country,
+      citte: req.body.state,
+      couy: req.body.city,
+      stantry: req.body.country,
       postalCode: req.body.postalcode,
       email: req.body.email,
       phone: req.body.phone,
 
     }
+
     payment = req.body.paymentmethod,
-      grand_Total = grand_Total,
-      user = req.session.user
+      grand_Total = paymentTotal
+    console.log(grand_Total);
+    user = req.session.user
     products = productCart
-    orderdate = new Date().toISOString()
+    orderdate = new Date().toLocaleString()
     let delDate = new Date()
-    let deliveryDate = new Date(delDate.setDate(delDate.getDate() + 7))
+    let deliveryDate = new Date(delDate.setDate(delDate.getDate() + 7)).toLocaleString()
     status = status
     let orderId = uuid()
 
-    if (req.body.paymentmethod === "onlinepayment") {
-  const grand_paise=Math.round(grand_Total*100)
-  console.log(grand_paise);
+    if (payment === "onlinepayment") {
+      console.log(payment);
+
+
       orders = {
         deliveryAddress: delivery,
         paymentMethod: payment,
-        grand_Total: grand_paise,
+        grand_Total: paymentTotal,
         orderedUser: user,
         products: products,
         date: orderdate,
@@ -668,11 +846,13 @@ const proceed = async function (req, res, next) {
         deliveryDate: deliveryDate
       }
       var options = {
-        amount:  grand_Total * 100,
+        amount: grand_Total * 100,
         currency: "INR",
-        receipt: orderId
+        receipt: "" + orderId
       }
+
       instance.orders.create(options, function (err, order) {
+        console.log(order);
         if (err) {
           console.log(err);
         } else {
@@ -681,17 +861,20 @@ const proceed = async function (req, res, next) {
         }
       })
     } else {
-      await orderinfo.insertMany([{ deliveryAddress: delivery, paymentMethod: payment, grandTotal: grand_Total, orderedUser: user, products: products, date: orderdate, orderStatus: status, deliveryDate: deliveryDate }])
+
+      await orderinfo.insertMany([{ deliveryAddress: delivery, paymentMethod: payment, grandTotal: paymentTotal, orderedUser: user, products: products, date: orderdate, orderStatus: status, deliveryDate: deliveryDate }])
+
       res.json({ status: false })
     }
     await cartInfo.deleteOne({ user: req.session.user.name })
   } catch (error) {
-    console.log(error.message)
+    console.log(error)
+    next()
   }
 }
 const userOrder = async function (req, res, next) {
   const orderId = req.session.user._id
-  const userOrders = await orderinfo.aggregate([{ $match: { orderedUser: orderId } },])
+  const userOrders = await orderinfo.aggregate([{ $match: { orderedUser: orderId } }])
   res.render("userOders", { userOrders })
 }
 
@@ -727,7 +910,8 @@ const extAddressEdit = async function (req, res, next) {
     res.render('editAddress', { adressEditExt })
 
   } catch (error) {
-    console.log(error.message)
+    console.log(error)
+    next()
   }
 }
 const existAddress = async function (req, res, next) {
@@ -740,7 +924,8 @@ const existAddress = async function (req, res, next) {
     res.redirect('/addressEdit')
 
   } catch (error) {
-    console.log(error.message)
+    console.log(error)
+    next()
   }
 }
 
@@ -780,7 +965,8 @@ const addressUpdate = async function (req, res, next) {
     res.redirect('/userAddress')
 
   } catch (error) {
-
+    console.log(error)
+    next()
   }
 }
 
@@ -793,35 +979,159 @@ const search = async function (req, res, next) {
 }
 const applyCoupon = async function (req, res, next) {
   const couponId = req.body.couponcode
+  user = req.session.user.name
   console.log(couponId);
 
-  let couponCheck = await couponinfo.findOne({ couponCode: couponId })
+  let usedCouponCheck = await userinfo.find({ user: user, usedCoupon: { $in: [couponId] } })
 
-  if (couponCheck) {
-    const date = new Date().toDateString()
+  if (usedCouponCheck) {
 
-    console.log(date);
 
-    if (date > couponCheck.expireDate) {
-      req.session.coupon = couponId
 
+    let couponCheck = await couponinfo.findOne({ couponCode: couponId })
+
+
+    await userinfo.updateOne({ name: user }, { $push: { usedCoupon: couponId } })
+
+    if (couponCheck) {
+      const date = new Date().toDateString()
+
+      console.log(date);
+
+      if (date > couponCheck.expireDate) {
+        req.session.coupon = couponId
+
+      } else {
+        couponError = "invalid Coupon code"
+        req.session.couponError = couponError
+        couponError = null
+      }
     } else {
       couponError = "invalid Coupon code"
       req.session.couponError = couponError
+      couponError = null
     }
   } else {
-    couponError = "Coupon is alredy used"
-    req.session.couponError = couponError
+    couponerr = "This coupon is alredy used"
+    req.session.couponerror1 = couponerr
+
   }
+
+
   res.redirect('/cart')
 }
 
-paymentVerification = function (req, res, next) {
+const paymentVerification = async function (req, res, next) {
+  try {
 
-  console.log(req.body);
-  res.redirect('/checkout')
+  } catch (error) {
+
+  }
+  user = req.session.user
+
+  if (user) {
+    raz = req.body
+
+    hmac.update(raz['payment[razorpay_order_id]'] + '|' + raz['payment[razorpay_payment_id]'])
+    hmac = hmac.digest('hex')
+    if (hmac == raz['payment[razorpay_signature]']) {
+      order = orders
+
+      order.orderdate = new Date()
+      order.orderdate = order.orderdate.toLocalString()
+      let dt = new Date()
+      order.deliveryDate = new Date(dt.setDate(dt.getDate() + 7))
+      order.deliveryDate = order.deliveryDate.toLocalString()
+      order.products[0].product.paymentId = uuid()
+
+
+      for (i = 0; i < products[0].product.length; i++) {
+        order.products[0].product[i].paymentId = req.body['payment[razorpay_payment_id]']
+
+      }
+      await orderinfo.insertMany([order])
+      await cartInfo.deleteOne({ user: req.session.user.name })
+      req.session.user.order = null
+      res.json({ PaymentSuccsess })
+    } else {
+
+    }
+    console.log(req.body);
+    res.redirect('/')
+  }
+}
+const userProducrOrderGet = function (req, res, next) {
+
+  let productUserData = req.session.productUserData
+
+
+  res.render("userOrderDetails", { productUserData })
 
 }
+const userProductOrder = async function (req, res, next) {
+
+
+  const orderedId = req.query._id
+  user = req.session.user.name
+  // req.session.orderId=orderId
+
+  const productUserData = await orderinfo.aggregate([{ $unwind: "$products" }, { $match: { orderedUser: user } }, { $project: { product: "$products.product" } }, { $match: { _id: new ObjectId(orderedId) } }])
+
+  req.session.productUserData = productUserData
+
+  res.redirect("/userOrderDetails",)
+}
+const lowToHighSort = async function (req, res, next) {
+  const lowToHighSort = await productinfo.find().sort({ price: 1 })
+  req.session.lowToHighSort = lowToHighSort
+  console.log(lowToHighSort);
+
+  res.redirect('/shop')
+}
+
+const highToLowSort = async function (req, res, next) {
+  const highToLowSort = await productinfo.find().sort({ price: -1 })
+
+  req.session.highToLowSort = highToLowSort
+
+  res.redirect('/shop')
+}
+const newestFirst = async function (req, res, next) {
+  const newest = await productinfo.find().sort({ _id: -1 })
+  req.session.newest = newest
+
+  res.redirect('/shop')
+}
+const oldestSort = async function (req, res, next) {
+  const oldest = await productinfo.find().sort({ _id: 1 })
+
+  req.session.oldest = oldest
+  res.redirect('/shop')
+}
+const priceSortOne = async function (req, res, next) {
+
+  const priceSortOne = await productinfo.find({ price: { $gte: 0, $lte: 1000 } })
+  req.session.priceSortOne = priceSortOne
+  res.redirect('/shop')
+}
+const priceSortTwo = async function (req, res, next) {
+  const priceSortTwo = await productinfo.find({ price: { $gte: 1000, $lte: 5000 } })
+  req.session.priceSortTwo = priceSortTwo
+  res.redirect('/shop')
+}
+const priceSortThree = async function (req, res, next) {
+  const priceSortThree = await productinfo.find({ price: { $gte: 5000, $lte: 10000 } })
+  req.session.priceSortThree = priceSortThree
+  res.redirect('/shop')
+}
+
+const priceSortFour=async function(req,res,next){
+  const priceSortFour = await productinfo.find({ price: { $gte: 10000 } })
+req.session.priceSortFour=priceSortFour
+  res.redirect('/shop')
+}
+
+
 
 
 module.exports = {
@@ -868,7 +1178,19 @@ module.exports = {
   search,
   applyCoupon,
   userOrder,
-  paymentVerification
+  paymentVerification,
+  userProductOrder,
+  userProducrOrderGet,
+  lowToHighSort,
+  highToLowSort,
+  newestFirst,
+  oldestSort,
+  priceSortOne,
+  priceSortTwo,
+  priceSortThree,
+  priceSortFour
+
+
 
 
 

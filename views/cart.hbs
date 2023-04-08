@@ -182,12 +182,12 @@
                             <div class="quantity">
                                 <div class="value-button" id="decrease"
                                     onclick="decreaseValue('{{product.productId}}'),updatequantity('{{product.productId}}',-1)"
-                                    value="Decrease Value"><button style="border-color: antiquewhite;">-</button></div>
-                                <input style="width: 2rem;" type="tel" id="quantity-number-{{product.productId}}" value="{{quantity}}" />
+                                    value="Decrease Value"><button style="border-color: antiquewhite;width: 2rem;">-</button></div>
+                                <input style="width: 2rem;" type="text" id="quantity-number-{{product.productId}}" value="{{quantity}}" / readonly>
                                 {{!-- <span type="number" id="number" value="{{quantity}}">{{quantity}}</span> --}}
                                 <div class="value-button" id="increase"
                                     onclick="increaseValue('{{product.productId}}'),updatequantity('{{product.productId}}',1)"
-                                    value="Increase Value"><button style="border-color: antiquewhite;">+</button></div>
+                                    value="Increase Value"><button style="border-color: antiquewhite;width: 2rem;">+</button></div>
                             </div>
 
                             {{!-- <div class="pro-qty-2">
@@ -232,19 +232,23 @@
                     <form action="/couponApplay" method="post">
                         <input type="text" name="couponcode" placeholder="Coupon code">
                         <button style="height: 3.1rem;" type="submit">Apply</button>
-                        <p>{{couponerror}}{{couponerr}}</p>
+                        <p class="text-danger">{{couponerror}}{{couponerr}}{{couponerror1}}</p>
                     </form>
                 </div>
                 <div class="cart__total">
                     <h6>Cart total</h6>
                     <ul>
                         <li >Total</li>
+                        <p class="text-danger" id="carterr">{{carterr}}</p>
                         
                         <li id="grandTotal" >{{grand_Total}}</li>
                    
                     </ul>
                     
+                    <p style="font-size: 2rem;" class="text-danger text-center">{{stockmsg}}</p>
+                  
                     <a href="/checkoutPage" class="primary-btn">Proceed to checkout</a>
+
                 </div>
             </div>
         </div>
@@ -384,6 +388,12 @@
             },
             method: 'post',
             success: (response) => {
+                if(response.stock){
+                    document.getElementById('carterr').innerHTML=response.stock
+                }else{
+                    document.getElementById('carterr').innerHTML=''
+                }
+                
                if(response['status']){
                 let cartItem = response['cartElements']
                 let grandTotal = 0
