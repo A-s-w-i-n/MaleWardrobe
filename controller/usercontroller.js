@@ -98,6 +98,9 @@ const usershop = async function (req, res, next) {
     let priceSortTwo = req.session.priceSortTwo
     let priceSortThree = req.session.priceSortThree
     let priceSortFour=req.session.priceSortFour
+    let shopProducts=req.session.shopProducts
+    // let pageNum=req.session.pageNum
+    // let perpage=req.session.perpage
 
     let categoryFetch = await categoryinfo.find({ status: true })
 
@@ -109,6 +112,9 @@ const usershop = async function (req, res, next) {
 
     if (selectone == null || selectone == "allcategory") {
       let addnew = await productinfo.find()
+      if(shopProducts){
+        addnew=shopProducts
+      }
       if (priceSortOne) {
         addnew = priceSortOne
         req.session.priceSortOne = null
@@ -147,7 +153,7 @@ const usershop = async function (req, res, next) {
 
       req.session.addnew = addnew
 
-      res.render('shop', { addnew, categoryFetch, lowToHighSort, highToLowSort })
+      res.render('shop', { addnew, categoryFetch, lowToHighSort, highToLowSort,shopProducts })
     } else {
 
       const addnew = await productinfo.find({ category: selectone })
@@ -1130,6 +1136,21 @@ const priceSortFour=async function(req,res,next){
 req.session.priceSortFour=priceSortFour
   res.redirect('/shop')
 }
+const changePage=async function(req,res,next){
+  const pageNum=req.query.page
+  const perpage=6
+
+  const shopProducts=await productinfo.find().skip((pageNum-1)*perpage).limit(perpage)
+
+  // const pages=Math.ceil(shopProducts/perpage)
+
+  req.session.shopProducts=shopProducts
+  // req.session.pageNum=pageNum
+  // req.session.perpage=perpage
+  // req
+  res.redirect('/shop')
+}
+
 
 
 
@@ -1188,7 +1209,8 @@ module.exports = {
   priceSortOne,
   priceSortTwo,
   priceSortThree,
-  priceSortFour
+  priceSortFour,
+  changePage
 
 
 

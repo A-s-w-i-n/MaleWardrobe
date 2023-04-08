@@ -226,12 +226,13 @@
                             <div class="accordion" id="accordionExample">
                                 <div class="card">
                                     <div class="card-heading">
-                                        <a href="/usecategory/allcategory"  >Categories</a>
+                                         <a data-toggle="collapse" data-target="#collapseTwo">Category</a>
                                     </div>
                                     <div id="collapseOne" class="collapse show" data-parent="#accordionExample">
                                         <div class="card-body">
                                             <div class="shop__sidebar__categories">
                                                 <ul class="nice-scroll">
+                                                     <a style="color: rgb(167, 154, 154);font-size: 15px;" href="/usecategory/allcategory"  >All Category</a>
                                                 {{#each categoryFetch}}
                                                     <li><a href="/usecategory/{{this.name}}">{{this.name}}</a></li>
                                                     
@@ -341,11 +342,11 @@
                         
     <nav aria-label="...">
   <ul class="pagination pagination-sm">
-    <li class="page-item disabled">
-      <a class="page-link" href="/pageChange" tabindex="-1">1</a>
+  
+      <a class="page-link" href="/pageChange/?page=1" tabindex="-1">1</a>
     </li>
-    <li class="page-item"><a class="page-link" href="/pageChange">2</a></li>
-    <li class="page-item"><a class="page-link" href="/pageChange">3</a></li>
+    <li class="page-item"><a class="page-link" href="/pageChange/?page=2">2</a></li>
+    <li class="page-item"><a class="page-link" href="/pageChange/?page=3">3</a></li>
   </ul>
 </nav>
         </div>

@@ -45,6 +45,7 @@ router.get('/zeroToOne',userget.priceSortOne)
 router.get('/oneToFive',userget.priceSortTwo)
 router.get('/fiveToTen',userget.priceSortThree)
 router.get('/MoreThen',userget.priceSortFour)
+router.get('/pageChange/',userget.changePage)
 
 
 
