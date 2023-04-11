@@ -247,12 +247,14 @@
     <div class="row" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(5rem, 1fr)); grid-gap: .1rem;">
   {{#each edit.image}}
     <div class="col" style="width: 8rem; height: 10rem;">
+      <input value="{{edit.image}}" name="image" type="text" hidden>
+ <a href="/deleteEditImage/?index={{@index}}&productId={{../edit.productId}}"><i class="fa-solid fa-trash" style="color: #000000;"></i></a>
       <div>
         <img class="col" style="width: 8rem; height: 10rem;" src="/productimages/{{[]}}" alt="">
       </div>
-      <input multiple class="form-contorl" value="{{[]}}"  type="file" name="image" id="" placeholder="Upload image">
     </div>
   {{/each}}
+      <input multiple class="form-contorl"  value="{{[]}}"  type="file" name="image" id="" placeholder="Upload image">
   <br>
 </div>
 <br>

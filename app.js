@@ -4,12 +4,13 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var session=require('express-session')
+const multer=require('multer')
 
 var indexRouter = require('./routes/admin');
 var usersRouter = require('./routes/users');
 
 var app = express();
-var fileuplode=require('express-fileupload')
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -21,10 +22,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(fileuplode({
-  useTempFiles : true,
-  tempFileDir : __dirname + '/public/temp/'
-}))
+
 
 app.use('/', indexRouter);
 app.use('/', usersRouter);
@@ -41,8 +39,13 @@ app.use(function(err, req, res, next) {
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   // render the error page
+  if(err.status==404){
+ res.render('error');
+  }else if(err.status==500){
+    res.render('errorSecond')
+  }
   res.status(err.status || 500);
-  res.render('error');
+ 
 });
 
 module.exports = app;

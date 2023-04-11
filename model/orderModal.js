@@ -58,7 +58,20 @@ const orderSchema=new mongoose.Schema({
     deliveryDate:{
         type:String,
         require:true
+    },
+    newReturnStats:{
+        type:String,
+        require:true
+    },
+    ConfirmReturnStatus:{
+        type:String,
+        require:true
+    },
+    deliveredStatus:{
+        type:String,
+        require:true
     }
+
 
 })
 

@@ -223,36 +223,42 @@ const newproductpost = async function (req, res, next) {
         addproductdata.productName = req.body.productname
         addproductdata.discription = req.body.discription
         addproductdata.subCategory = req.body.subcategory
+       
+        console.log(req.body);
         addproductdata.productId = uuidv4()
     
     
     
         let image = []
-        image = req.files.image
+        req.files.forEach(file => {
+            
+            image.push(file.filename)
+        });
+        addproductdata.image=image
+        // image = req.files.image    
+//         let imagesize = image.length
     
-        let imagesize = image.length
-    
-        if (imagesize) {
-            for (i = 0; i < image.length; i++) {
+//         if (imagesize) {
+//             for (i = 0; i < image.length; i++) {
 
                 
-                let path = "" + image[i].tempFilePath
-                console.log(path);
-                await sharp(path)
-                  .rotate()
-                  .resize(1000, 1500)
-                  .jpeg({ mozjpeg: true })
-                  .toFile('./public/productimages/' + addproductdata.productId + i + '.jpg')
-                image[i] = addproductdata.productId + i + '.jpg'
-            }
-            addproductdata.image = image
-        }
-        else {
-            image.mv('./public/productimages/' + addproductdata.productId + '.jpg')
+//                 let path = "" + image[i].tempFilePath
+//                 console.log(path);
+//                 await sharp(path)
+//                   .rotate()
+//                   .resize(1000, 1500)
+//                   .jpeg({ mozjpeg: true })
+//                   .toFile('./public/productimages/' + addproductdata.productId + i + '.jpg')
+//                 image[i] = addproductdata.productId + i + '.jpg'
+//             }
+//             addproductdata.image = image
+//         }
+//         else {
+//             image.mv('./public/productimages/' + addproductdata.productId + '.jpg')
     
-            image = addproductdata.productId + '.jpg'
-            addproductdata.image = image
-        }
+//             image = addproductdata.productId + '.jpg'
+//             addproductdata.image = image
+//         }
     
         await productinfo.insertMany([addproductdata])
     
@@ -264,59 +270,57 @@ const newproductpost = async function (req, res, next) {
     }
 }
 
+
 const editexistproductpost = async function (req, res, next) {
     try {
-         const id2=req.session.id2
-        
-        id = req.params.id
-        let items = req.body
-    
-        let image = []
-    
-        image = req.files.image
-        console.log(req.files);
-        let imagesize = image.length
-        response.status=true
-        // const productobj=req.files
-        // console.log(productobj);
-        // if(productobj){
-        //     count=Object.keys(productobj).length
-        //     console.log(count);
-        //     for(i=0;i<count;i++){
-        //         imageId=Object.keys(productobj)[i]
-        //         img=Object.values(productobj)[i]
-        //         console.log(img);
-        //     }
-        // }
 
+        if(req.files){
+            const id2=req.session.id2
         
-        if (imagesize > 1) {
-            for (i = 0; i < image.length; i++) {
-                image[i].mv('./public/productimages/' + id + i + '.jpg')
-                image[i] = id + i + '.jpg'
-    
-            }
-            items.image = image
+           let id = req.params.id
+            let items = req.body
+            let editImage=req.files
+            let image = []
+            req.files.forEach(file => {
+                
+                image.push(file.filename)
+            });
+            
+           
+        
+            console.log(image);
+            await productinfo.updateOne({ _id: id2 }, {
+                $set: {
+                    productName: req.body.productname,
+                    category: req.body.category,
+                    subCategory: req.body.subcategory,
+                    price: req.body.price,
+                    stock: req.body.stock,
+                    brand: req.body.brand,
+                    
+                    discription: req.body.discription
+                }
+            })
+            await productinfo.updateOne({_id:new ObjectId(id2)},{$push:{"image":image}})
+          
+            res.redirect('/allproducts')
+        }else{
+            await productinfo.updateOne({ _id: id2 }, {
+                $set: {
+                    productName: req.body.productname,
+                    category: req.body.category,
+                    subCategory: req.body.subcategory,
+                    price: req.body.price,
+                    stock: req.body.stock,
+                    brand: req.body.brand,
+                   
+                    discription: req.body.discription
+                }
+            })
+            
+            res.redirect('/allproducts')
         }
-        else {
-            image.mv('./public/productimages/' + id + '.jpg')
-            items.image = id + '.jpg'
-        }
-    
-        console.log(image);
-        await productinfo.updateOne({ _id: id2 }, {
-            $set: {
-                productName: req.body.productname,
-                category: req.body.category,
-                subCategory: req.body.subcategory,
-                price: req.body.price,
-                stock: req.body.stock,
-                brand: req.body.brand,
-                image: req.body.image,
-                discription: req.body.discription
-            }
-        })
-        res.redirect('/allproducts')
+       
     } catch (error) {
         console.log(error)
         next()
@@ -328,7 +332,7 @@ const newcategoryaddpost = async function (req, res, next) {
         const addcategorynew = req.body
         const  categoryExist=await categoryinfo.findOne({name:req.body.category})
         var results = new RegExp('[\\?&]' + req.body.category + '=([^&#]*)', "i")
-            if(categoryExist||results){
+            if(categoryExist&&results){
                 res.redirect('/addcategory')
              let  categorymsg="Category alredy exist"
              req.session.categorymsg=categorymsg
@@ -361,7 +365,10 @@ const desable = async function (req, res, next) {
     try {
         
         desableStatus = req.params.id
+
         await categoryinfo.updateOne({ _id: desableStatus }, { $set: { status: false } })
+        let categorname=await categoryinfo.find({_id:desableStatus})
+        await productinfo.updateOne({category:categorname},{$set:{desableProduct:false}})
         res.redirect('/addcategory')
     } catch (error) {
         console.log(error)
@@ -416,13 +423,24 @@ const orderManagemnt=async function(req,res,next){
     
 
 }
-const adminOrderView=function(req,res,next){
+const adminOrderView=async function(req,res,next){
     try {
         const productData=req.session.productData
         const productDataDetails=req.session.productDataDetails
         let orderConfirmed=req.session.orderConfirmed
+
+
+        const dropDownRemove=await orderinfo.findOne()
+
+        let removeStat=dropDownRemove.orderStatus
+      
+        if(removeStat=='return confirmed'){
+          removeStat=null
+          console.log(removeStat);
+        }
+        req.session.removeStat=removeStat
         
-        res.render("adminOrderedProduct",{productData,productDataDetails,orderConfirmed})
+        res.render("adminOrderedProduct",{productData,productDataDetails,orderConfirmed,removeStat})
     } catch (error) {
         console.log(error)
         next()
@@ -464,13 +482,19 @@ const bannerAdmin=async function(req,res,next){
         bannerDetails.bannerId=uuidv4()
         bannerDetails.status=true
 
+     
         let image = []
-        image=req.files.image
+        req.files.forEach(file => {
+            
+            image.push(file.filename)
+        });
+        bannerDetails.image=image
+        // image=req.files.image
         
-            image.mv('./public/bannerImages/' + bannerDetails.bannerId + '.jpg')
+        //     image.mv('./public/bannerImages/' + bannerDetails.bannerId + '.jpg')
     
-            image = bannerDetails.bannerId + '.jpg'
-            bannerDetails.image = image
+        //     image = bannerDetails.bannerId + '.jpg'
+        //     bannerDetails.image = image
        
     
         await bannerinfo.insertMany([bannerDetails])
@@ -562,6 +586,44 @@ let coupondatas=req.session.coupondatas
     }})
     res.redirect('/coupon')
   }
+  const adminConfirmReturn=async function(req,res,next){
+
+  const adminRerurnConfirmationId=req.params.id
+
+    await  orderinfo.updateOne({_id:new ObjectId(adminRerurnConfirmationId)},{$set:{orderStatus:"return confirmed"}})
+
+    await orderinfo.updateOne({_id:new ObjectId(adminRerurnConfirmationId)},{$set:{newReturnStats:"retrn confirmed"}})
+
+    await orderinfo.updateOne({_id:new ObjectId(adminRerurnConfirmationId)},{$set:{ConfirmReturnStatus:"confirmed"}})
+    res.redirect('/orderManagement')
+}
+const deliveredOrder=async function(req,res,next){
+
+    const DeliveredOrderId=req.params.id
+
+    await orderinfo.updateOne({_id:new ObjectId(DeliveredOrderId) },{$set:{orderStatus:"Delivered"}})
+
+     await orderinfo.updateOne({_id:new ObjectId(DeliveredOrderId)},{$set:{deliveredStatus:"Delivered"}})
+
+
+
+    res.redirect('/orderManagement')
+}
+const deleteEditImg=async function(req,res,next){
+     
+    const editImgDelete=req.query.index
+    const editImgDeleteId=req.query.productId
+    console.log(req.query);
+    const image=req.files
+
+   await productinfo.updateOne({productId:editImgDeleteId},{$pull:{image:image}})
+
+    // const imageEditSelect=editImageFind[editImgDelete]
+
+    
+
+    res.redirect('/editproduct')
+}
 
 
 
@@ -600,5 +662,8 @@ module.exports = {
     addCoupon,
     statusOrder,
     editCoupon,
-    proceedCouponUpdate
+    proceedCouponUpdate,
+    adminConfirmReturn,
+    deliveredOrder,
+    deleteEditImg
 }

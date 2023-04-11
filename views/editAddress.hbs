@@ -10,31 +10,30 @@
                     </div>
                     {{#each  adressEditExt}}
 
-                    {{#each this.address}}
+                  
 
                     
                     
 
                     <div class="row mt-3">
-                        <div class="col-md-6"><input type="text" class="form-control" name="housename" placeholder="" value="{{name}}"></div>
+                        <div class="col-md-6"><input type="text" class="form-control" name="housename" placeholder="" value="{{address.name}}"></div>
                         
                     </div>
                     <div class="row mt-3">
-                        <div class="col-md-6"><input type="text" class="form-control" name="state" placeholder="" value="{{state}}"></div>
+                        <div class="col-md-6"><input type="text" class="form-control" name="state" placeholder="" value="{{address.state}}"></div>
                         
                     </div>
                     <div class="row mt-3">
-                        <div class="col-md-6"><input type="text" class="form-control" name="city" placeholder="" value="{{city}}"></div>
+                        <div class="col-md-6"><input type="text" class="form-control" name="city" placeholder="" value="{{address.city}}"></div>
                         
                     </div>
                      <div class="row mt-3">
-                        <div class="col-md-6"><input type="text" class="form-control" name="country" placeholder="" value="{{country}}"></div>
+                        <div class="col-md-6"><input type="text" class="form-control" name="country" placeholder="" value="{{address.country}}"></div>
                         
                     </div>
                      <div class="row mt-3">
-                        <div class="col-md-6"><input type="text" class="form-control" name="postalcode" placeholder="" value="{{postalcode}}"></div>
-                        
-                        {{/each}}
+                        <div class="col-md-6"><input type="text" class="form-control" name="postalcode" placeholder="" value="{{address.postalcode}}"></div>
+                      
                          {{/each}}
                         
                     </div>

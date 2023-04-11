@@ -27,6 +27,10 @@
   <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
   <link href="assets/vendor/simple-datatables/style.css" rel="stylesheet">
   <link href="assets/css/style.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.2/css/bootstrap.min.css">
+
+<!-- Include the Bootstrap JavaScript library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.2/js/bootstrap.bundle.min.js"></script>
 
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -163,12 +167,27 @@
       <th>Ordered Date</th>
       <th>Delivery Date</th>
       <th>Payment Method</th>
+      {{#each productData}}
+      {{#if removeStat}}
       
-       <th>Action</th>
+      
+                                  {{else}}
+                                   <th>
+          <div  class="dropdown"></div>
+                                  <a style="color: black;background-color: rgb(255, 255, 255);" class="btn btn-primary btn-sm dropdown-toggle" href="" role="button" data-bs-toggle="dropdown" aria-expanded="false">Action</a>
+         <ul style="width: 2rem;"  class="dropdown-menu">
+                                     <li><a  class="dropdown-item"  href=""><button type="button" class="btn btn-hidden"  >cancel</button></a></li>
+                                    <li><a class="dropdown-item" href="">Cancel</a></li>
+                                     <li ><a  class="dropdown-item" href="/adminReturnConfirm/{{_id}}">Return Confirm</a></li>
+                                     <li ><a  class="dropdown-item" href="/orderDeliverd/{{_id}}">Deliverd</a></li>
+                                  </ul></th>
+                                  {{/if}}
+                                  {{/each}}
       
     </tr>
   </thead>
   <tbody>
+
 
     {{#each productData}}
     
@@ -224,10 +243,13 @@
         <p class="text-muted mb-0">{{paymentMethod}}</p>
         
       </td>
+      <td>
+        <p class="text-muted mb-0">{{orderStatus}}</p>
+      </td>
       {{/each}}
     
      
-      <td><a href="/orderStatus/{{_id}}"><button name="confirm" class="btn btn-primary">Confirm </button></a></td>
+      {{!-- <td><a href="/orderStatus/{{_id}}"><button name="confirm" class="btn btn-primary"> hgfhsgfdhg</button></a></td> --}}
    
 
 

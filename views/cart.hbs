@@ -187,7 +187,7 @@
                                 {{!-- <span type="number" id="number" value="{{quantity}}">{{quantity}}</span> --}}
                                 <div class="value-button" id="increase"
                                     onclick="increaseValue('{{product.productId}}'),updatequantity('{{product.productId}}',1)"
-                                    value="Increase Value"><button style="border-color: antiquewhite;width: 2rem;">+</button></div>
+                                    value="Increase Value"><button  style="border-color:  antiquewhite;width: 2rem;">+</button></div>
                             </div>
 
                             {{!-- <div class="pro-qty-2">
@@ -239,13 +239,13 @@
                     <h6>Cart total</h6>
                     <ul>
                         <li >Total</li>
-                        <p class="text-danger" id="carterr">{{carterr}}</p>
                         
                         <li id="grandTotal" >{{grand_Total}}</li>
+                        <p class="text-danger" id="carterr">{{carterr}}</p>
                    
                     </ul>
                     
-                    <p style="font-size: 2rem;" class="text-danger text-center">{{stockmsg}}</p>
+                    {{!-- <p style="font-size: 2rem;" class="text-danger text-center">{{stockmsg}}</p> --}}
                   
                     <a href="/checkoutPage" class="primary-btn">Proceed to checkout</a>
 
@@ -353,6 +353,7 @@
         value = isNaN(value) ? 0 : value;
         value++;
         document.getElementById('quantity-number-' + productId).value = value;
+        
     }
 
      function decreaseValue(productId) {
@@ -388,13 +389,15 @@
             },
             method: 'post',
             success: (response) => {
-                if(response.stock){
-                    document.getElementById('carterr').innerHTML=response.stock
-                }else{
-                    document.getElementById('carterr').innerHTML=''
-                }
                 
                if(response['status']){
+                if(response.stockmsg){
+                    document.getElementById('carterr').innerHTML=response.stockmsg
+                    
+                    return
+                }else{
+                    document.getElementById('carterr').innerHTML=""
+                }
                 let cartItem = response['cartElements']
                 let grandTotal = 0
                 for (i = 0; i<cartItem.length; i++){

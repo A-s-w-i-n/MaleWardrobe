@@ -45,7 +45,31 @@
       <td>
         <p class="text-muted mb-0">{{orderStatus}}</p>
       </td>
-      <td><a href="/userOrderProduct/?_id={{_id}}"><button class="btn btn-primary">Details</button></a></td>
+     
+     <td><a href="/userOrderProduct/?_id={{_id}}&orderedUser={{orderedUser}}"><button class="btn btn-primary">Details</button></a>
+     {{#if userOrderDeliveredId}}
+
+
+     {{else}}
+      {{#if newReturnStats }}
+      {{#if ConfirmReturnStatus}}
+      
+
+      <p class="text-success">Return Confirmed</p>
+
+      {{else}}
+      <p class="text-danger">Return Requsted</p>
+      {{/if}}
+
+      {{else}}
+      {{#if  deliveredStatus}}
+
+      <p>Product Deliverd</p>
+      {{else}}
+      <a href="/userReturn/{{_id}}"><button class="btn btn-primary">Return</button></a></td></td>
+      {{/if}}
+       {{/if}}
+       {{/if}}
 
       
       

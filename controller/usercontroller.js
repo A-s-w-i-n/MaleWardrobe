@@ -17,6 +17,7 @@ const couponinfo = require('../model/couponModel').adminCoupon
 const Razorpay = require('razorpay')
 const crypto = require('crypto')
 const { ObjectId } = require('mongodb')
+const multer=require('multer')
 let orders
 let hmac = crypto.createHmac('sha256', 'process.env.RAZORPAY_SECRET_KEY')
 require('dotenv').config()
@@ -239,10 +240,11 @@ const usercart = async function (req, res, next) {
       { $project: { item: 1, quantity: 1, product: { $arrayElemAt: ['$products', 0] } } }
     ]).toArray()
     req.session.productCart = productCart
-    console.log(productCart);
+    
 
     for (var i = 0; i < productCart.length; i++) {
       totalPrice = productCart[i].quantity * productCart[i].product.price
+    
       productCart[i].totalPrice = totalPrice
     }
     let grand_Total = 0
@@ -270,6 +272,7 @@ const usercart = async function (req, res, next) {
 
         let couponTotal = couponVal[0].discountPrice
 
+
         req.session.couponTotal = couponTotal
 
         console.log(grand_Total);
@@ -286,6 +289,9 @@ const usercart = async function (req, res, next) {
 
     res.render('cart', { productCart, grand_Total, couponerror, couponerr, couponerror1, stockmsg })
     stockmsg = null
+    couponError=null
+
+    
   }
   // }
   catch (error) {
@@ -302,11 +308,10 @@ const usercheckout = async function (req, res, next) {
     let productCart = req.session.productCart
     let couponTotal = req.session.couponTotal
     let addressPage = req.session.passAdd
-
-    let passId2 = req.session.passId2
     // checkoutaProducts=req.params.id
     user = req.session.user.name
     const user1 = req.session.user
+    const addressPage1=  await addressinfo.find({ user: user })
 
 
 
@@ -345,7 +350,7 @@ const usercheckout = async function (req, res, next) {
         }
         const paymentTotal = grand_Total
         req.session.paymentTotal = paymentTotal
-        res.render('checkout', { addressDetail, userCheck, productCart, grand_Total, user1, addressPage })
+        res.render('checkout', { addressDetail, userCheck, productCart, grand_Total, user1, addressPage,addressPage1 })
 
       }
     } else {
@@ -679,28 +684,26 @@ const changeQuantity = async function (req, res, next) {
     let productData = req.session.productData
     let qaunt = req.session.quantity
     let stock = productData.stock
+    let stockmsg
     console.log(stock);
     console.log(qaunt);
     if (qaunt <= stock) {
 
       carterror = null
-
+      req.session.stockmsg = ""
 
     } else {
-      let stockmsg = "out of stock"
+      stockmsg = "out of stock"
       req.session.stockmsg = stockmsg
-
-
-
     }
+    
 
 
     res.json({
       status: true,
       cartElements: cartElements,
-      stock: carterror
-
-
+      stock: carterror,
+      stockmsg:stockmsg
     })
 
   } catch (error) {
@@ -758,7 +761,7 @@ const userAddress = async function (req, res, next) {
 
 
 
-    res.redirect('/userAddress')
+    res.redirect('/checkout')
   } catch (error) {
 
     console.log(error)
@@ -767,7 +770,6 @@ const userAddress = async function (req, res, next) {
 }
 const savedAddress = async function (req, res, next) {
   try {
-    // let addressPage=req.session.addressPage
     user = req.session.user.name
     const passId = req.query.index
     const passId2 = req.query.id
@@ -810,7 +812,7 @@ const proceed = async function (req, res, next) {
     let paymentTotal = req.session.paymentTotal
     user = req.session.user.name
 
-    let status = req.body.paymentmethod === "COD" ? "Pending" : "waiting"
+    let status = req.body.paymentmethod === "COD" ? "orderConfirmed" : "orderConfirmed"
     console.log(req.body);
 
     let delivery = {
@@ -880,8 +882,11 @@ const proceed = async function (req, res, next) {
 }
 const userOrder = async function (req, res, next) {
   const orderId = req.session.user._id
+  const addReturnField=req.session.addReturnField
+  
   const userOrders = await orderinfo.aggregate([{ $match: { orderedUser: orderId } }])
-  res.render("userOders", { userOrders })
+   const returnConfirmation=await orderinfo.find()
+  res.render("userOders", { userOrders,addReturnField })
 }
 
 const editProfile = async function (req, res, next) {
@@ -908,11 +913,12 @@ const extAddressEdit = async function (req, res, next) {
   try {
 
     user = req.session.user.name
-    const addressEdit = req.session.user.addressEdit
+    const addressEdit = req.session.user.addressEditId
 
-    const adressEditExt = await addressinfo.findOne({ address: { $elemMatch: { id: addressEdit } } })
-    console.log(adressEditExt);
 
+    const adressEditExt = await addressinfo.aggregate([{$match:{user:user}},{$unwind:"$address"},{$match:{"address.id":addressEdit}}])
+    
+console.log(adressEditExt);
     res.render('editAddress', { adressEditExt })
 
   } catch (error) {
@@ -923,10 +929,11 @@ const extAddressEdit = async function (req, res, next) {
 const existAddress = async function (req, res, next) {
   try {
     user = req.session.user.name
+    const addressEditId=req.params.id
 
-    const addressEdit = await addressinfo.findOne({ user: user })
+    const addressEdit = await addressinfo.findOne({user:user})
     console.log(addressEdit)
-    req.session.user.addressEdit = addressEdit.address[0].id
+    req.session.user.addressEditId = addressEditId
     res.redirect('/addressEdit')
 
   } catch (error) {
@@ -943,7 +950,7 @@ const addressDelete = async function (req, res, next) {
     await addressinfo.updateOne({ user: req.session.user.name }, { $pull: { address: { id: addressDel } } })
 
 
-    res.redirect('/userAddress')
+    res.redirect('/checkout')
   } catch (error) {
 
   }
@@ -951,9 +958,11 @@ const addressDelete = async function (req, res, next) {
 const addressUpdate = async function (req, res, next) {
   try {
     user = req.session.user.name
-    const editUserAddress = req.session.user.addressEdit
+    const editUserAddress = req.session.user.addressEditId
 
-    await addressinfo.updateOne({ user: user, "address.id": editUserAddress },
+    console.log(editUserAddress);
+
+    await addressinfo.updateOne({ user: user, address: { $elemMatch: { id: editUserAddress } } },
       {
         $set:
 
@@ -968,7 +977,7 @@ const addressUpdate = async function (req, res, next) {
         }
       })
 
-    res.redirect('/userAddress')
+    res.redirect('/checkout')
 
   } catch (error) {
     console.log(error)
@@ -989,8 +998,9 @@ const applyCoupon = async function (req, res, next) {
   console.log(couponId);
 
   let usedCouponCheck = await userinfo.find({ user: user, usedCoupon: { $in: [couponId] } })
+  console.log(usedCouponCheck);
 
-  if (usedCouponCheck) {
+  if (usedCouponCheck=="") {
 
 
 
@@ -1001,7 +1011,7 @@ const applyCoupon = async function (req, res, next) {
 
     if (couponCheck) {
       const date = new Date().toDateString()
-
+      
       console.log(date);
 
       if (date > couponCheck.expireDate) {
@@ -1025,6 +1035,7 @@ const applyCoupon = async function (req, res, next) {
 
 
   res.redirect('/cart')
+  
 }
 
 const paymentVerification = async function (req, res, next) {
@@ -1058,7 +1069,7 @@ const paymentVerification = async function (req, res, next) {
       await orderinfo.insertMany([order])
       await cartInfo.deleteOne({ user: req.session.user.name })
       req.session.user.order = null
-      res.json({ PaymentSuccsess })
+      res.json({ PaymentSuccsess})
     } else {
 
     }
@@ -1066,24 +1077,33 @@ const paymentVerification = async function (req, res, next) {
     res.redirect('/')
   }
 }
-const userProducrOrderGet = function (req, res, next) {
+const userProducrOrderGet =async function (req, res, next) {
 
-  let productUserData = req.session.productUserData
+  
+  const orderedId = req.query._id
+ const orderId=req.query.orderedUser
 
+  let userOrderDelivered=await orderinfo.find({})
 
-  res.render("userOrderDetails", { productUserData })
+  let userOrderDeliveredId=userOrderDelivered.orderStatus
+ const productUserData = await orderinfo.aggregate([{ $unwind: "$products" }, { $match: { orderedUser: orderId } }, { $project: { product: "$products.product" } }, { $match: { _id: new ObjectId(orderedId) } }])
+ 
+  res.render("userOrderDetails", { productUserData,userOrderDeliveredId,userOrderDelivered })
 
 }
 const userProductOrder = async function (req, res, next) {
 
 
-  const orderedId = req.query._id
-  user = req.session.user.name
-  // req.session.orderId=orderId
+  // const orderedId = req.query._id
+  // user = req.session.user.name
+  // // req.session.orderId=orderId
 
-  const productUserData = await orderinfo.aggregate([{ $unwind: "$products" }, { $match: { orderedUser: user } }, { $project: { product: "$products.product" } }, { $match: { _id: new ObjectId(orderedId) } }])
+  // const productUserData = await orderinfo.aggregate([{ $unwind: "$products" }, { $match: { orderedUser: user } }, { $project: { product: "$products.product" } }, { $match: { _id: new ObjectId(orderedId) } }])
 
-  req.session.productUserData = productUserData
+  // req.session.productUserData = productUserData
+  // req.session.orderedId=orderedId
+
+
 
   res.redirect("/userOrderDetails",)
 }
@@ -1141,6 +1161,7 @@ const changePage=async function(req,res,next){
   const perpage=6
 
   const shopProducts=await productinfo.find().skip((pageNum-1)*perpage).limit(perpage)
+  
 
   // const pages=Math.ceil(shopProducts/perpage)
 
@@ -1149,6 +1170,19 @@ const changePage=async function(req,res,next){
   // req.session.perpage=perpage
   // req
   res.redirect('/shop')
+}
+const returnUser=async function(req,res,next){
+
+  const userReturnId=req.params.id
+
+  await orderinfo.updateOne({_id:new ObjectId(userReturnId)},{$set:{orderStatus:"returnRequsted"}})
+
+const addReturnField=  await orderinfo.updateOne({_id:new ObjectId(userReturnId)},{$set:{newReturnStats:"returnRequsted"}})
+
+req.session.addReturnField=addReturnField
+req.session.userReturnId=userReturnId
+
+  res.redirect('/userOederDetaile')
 }
 
 
@@ -1210,7 +1244,8 @@ module.exports = {
   priceSortTwo,
   priceSortThree,
   priceSortFour,
-  changePage
+  changePage,
+  returnUser,
 
 
 

@@ -32,7 +32,7 @@ router.get('/savedAddress/',session.sessionCheck,userget.savedAddress)
 router.get('/placeOrder',session.sessionCheck,userget.placeorder)
 router.get('/editprofile',session.sessionCheck,userget.editProfile)
 router.get('/addressEdit',session.sessionCheck,userget.extAddressEdit)
-router.get('/editExstAddress',session.sessionCheck,userget.existAddress)
+router.get('/editExstAddress/:id',session.sessionCheck,userget.existAddress)
 router.get('/deleteAddress/:id',session.sessionCheck,userget.addressDelete)
 router.get('/userOederDetaile',session.sessionCheck,userget.userOrder)
 router.get('/userOrderProduct/',session.sessionCheck,userget.userProductOrder)
@@ -46,6 +46,9 @@ router.get('/oneToFive',userget.priceSortTwo)
 router.get('/fiveToTen',userget.priceSortThree)
 router.get('/MoreThen',userget.priceSortFour)
 router.get('/pageChange/',userget.changePage)
+router.get('/userReturn/:id',userget.returnUser)
+
+
 
 
 

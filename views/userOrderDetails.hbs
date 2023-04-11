@@ -14,7 +14,7 @@
   </thead>
   <tbody>
 
-    {{#each productUserData}}
+    {{#each userOrderDelivered}}
     
     
     <tr>
@@ -38,6 +38,9 @@
       </td>
        <td>
         <p class="text-muted mb-0">{{product.productId}}</p>
+      </td>
+       <td>
+        <p class="text-muted mb-0">{{paymentMethod}}</p>
       </td>
       <td> <a href=""><button class="btn btn-primary">Details</button></a></td>
 

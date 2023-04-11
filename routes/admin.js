@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
 const adminsession=require('../middleware/session')
+const multer=require('multer')
+const multerConfig=require('../middleware/multerImage')
 
 const adminget = require('../controller/admincontroller')
 
@@ -27,12 +29,16 @@ router.get('/coupon',adminsession.adminSession,adminget.adminCoupon)
 router.get('/orderStatus/:id',adminsession.adminSession,adminget.statusOrder)
 router.get('/couponEdit/:id',adminsession.adminSession,adminget.editCoupon)
 router.post('/updateEdit',adminsession.adminSession,adminget.proceedCouponUpdate)
+router.get('/adminReturnConfirm/:id',adminget.adminConfirmReturn)
+router.get('/orderDeliverd/:id',adminget.deliveredOrder)
+router.get('/deleteEditImage/',adminget.deleteEditImg)
+
 // router.get('/deleteuser/:id', adminget.deleteOne)
 
 router.post('/adminhomepage', adminget.adminloginvalidationpost)
 
-router.post('/adminaddproduct',adminsession.adminSession, adminget.newproductpost)
-router.post('/editnew/:id', adminsession.adminSession, adminget.editexistproductpost)
+router.post('/adminaddproduct',adminsession.adminSession,multerConfig.upload.array('image'), adminget.newproductpost)
+router.post('/editnew/:id', adminsession.adminSession,multerConfig.upload.array('image'), adminget.editexistproductpost)
 router.post('/add-category', adminsession.adminSession,adminget.newcategoryaddpost)
 router.post('/subCategory',adminsession.adminSession, adminget.newsubcategorypost)
 router.get('/desable/:id',adminsession.adminSession, adminget.desable)
@@ -42,7 +48,7 @@ router.get('/subenable/:id',adminsession.adminSession, adminget.subenable)
 router.get('/bannerDesable/:id',adminsession.adminSession,adminget.desableBanner)
 router.get('/bannerEnable/:id',adminsession.adminSession,adminget.enableBanner)
 
-router.post('/bannerAdd',adminsession.adminSession,adminget.addBanner)
+router.post('/bannerAdd',adminsession.adminSession,multerConfig.upload.array('image'),adminget.addBanner)
 router.post('/couponAdd',adminsession.adminSession,adminget.addCoupon)
 
 

@@ -154,8 +154,7 @@
             <div class="checkout__form">
                 <form id="checkout-form">
                     <div class="row">
-                        <a href="http://localhost:3000/userAddress"><button type="button"
-                                class="btn btn-dark">Address</button></a>
+                       
                         <div class="col-lg-8 col-md-6">
                             <h6 class="coupon__code"><span class="icon_tag_alt"></span> Have a coupon? <a href="#">Click
                                     here</a> to enter your code</h6>
@@ -260,43 +259,116 @@
                                         <span class="checkmark"></span>
                                     </label>
                                 </div> --}}
-                                <button type="submit" class="site-btn">PLACE ORDER</button>
+                                <button type="submit"   class="site-btn">PLACE ORDER</button>
                             </div>
                         </div>
                     </div>
-                </form>
-            </div>
-        </div>
+                         {{!-- <a  href="/userAddress"><button style="color: black;background-color: white; border-color: blue;" type="button"
 
-       
+                         
+                                class="btn btn-dark">Saved Address</button></a> --}}
 
-<div class="row  ">
-{{#each addressPage1 }}
 
-<div class=" col-3 card bg-light mb-3  text-center ms-5 mt-5"  >
 
+  <button type="button" style="color: rgb(0, 0, 0); background-color: white;" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+ Saved Address
+</button>
+<!-- Modal -->
+<div class="row">
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Address</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div style="width: 90rem;" class="modal-body">
+       {{#each addressPage1 }}
+       {{#each this.address}}
+
+<div style="width: 50rem;" class=" col-3 card bg-light mb-3  ms-5 mt-5"  >
+ 
   
-  <p>{{address.housename}}</p>
+  <p>{{name}}</p>
  <p>{{state}}</p>
   <p>{{city}}</p>
 <p>{{country}}</p>
    <p>{{postalcode}}</p>
    <br>
-   <br>
-
+ 
 
    
-   <a href="/savedAddress/{{@index}}"> <button type="submit" style="width: 5rem;" class="btn btn-success ms-2">Click</button></a>
-   <br>
-   <a href="/editExstAddress"><button type="button" style="width: 5rem;" class="btn btn-primary">Edit</button></a>
-   <br>
-   <a href="/deleteAddress/{{id}}"><button type="button" style="width: 5rem;" class="btn btn-dark">Delete</button></a>
+            
+ <div style="display: flex; justify-content: space-between;">
+  <a href="/savedAddress/?index={{@index}}&id={{id}}">
+    <button type="button" style="width: 5rem;font-size: 11px;height: 2rem;color: black;background-color: white;" class="btn btn-success">Click</button>
+  </a>
+  <a href="/editExstAddress/{{id}}">
+    <button type="button" style="width: 5rem;font-size: 11px;height: 2rem;color: black;background-color: white;" class="btn btn-primary">Edit</button>
+  </a>
+  <a href="/deleteAddress/{{id}}">
+    <button type="button" style="width: 5rem;font-size: 11px;height: 2rem;color: black;background-color: white;" class="btn btn-dark">Delete</button>
+  </a>
+  <a href="/profile">
+    <button type="button" style=" width: 5rem;font-size: 11px;height: 2rem;color: black;background-color: white;" class="btn btn-dark">Add </button>
+  </a>
+</div>
+
+   
+<style>
+    .float{
+        float: left !important;
+
+    }
+</style>
   
     <p></p>
+   
   </div>
 {{/each}}
-
+{{/each}}
+       
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+       
+      </div>
+    </div>
+  </div>
 </div>
+</div>
+                </form>
+            </div>
+        </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+
+
+ {{!-- addresss   modal --}}
+<!-- Button trigger modal -->
+
+
+
+
+
+ <style>    
+.btn {
+  background-color: #3F51B5;
+  color: white;
+  border-color: black;
+  padding: 10px 20px;
+  border-radius: 5px;
+}
+
+.btn:hover {
+  background-color: #062ffb;
+  border: 2px solid white;
+}
+</style>  
+
 
     </section>
     <!-- Checkout Section End -->
@@ -449,10 +521,19 @@
                 order,
             },
             method:"post",
+
+            success:(response)=>{
+                if(response.PaymentSuccsess){
+                    location.href="/placeOrder"
+                }else{
+                     location.href="/placeOrder"
+                }
+            }
         })
         
     }
 
 </script>
+
 
 </html>

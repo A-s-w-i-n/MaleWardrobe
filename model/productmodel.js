@@ -40,6 +40,10 @@ const productScema=new mongoose.Schema({
     productId:{
         type:String,
         require:true
+    },
+    desableProduct:{
+        type:Boolean,
+        require:true
     }
 
 })

@@ -8,20 +8,7 @@ const nodemailer=require('nodemailer')
 
 
 function otpvalidation(email,otpvalue){
-//     client.messages
-//       .create({
-//          body: otpvalue,
-//          from: '+15675571837',
-//          to: '+91'+phone
-//        })
-//       .then(message => console.log(message.sid));
 
-// }
-// const userPostOtpLogin = async function (req, res, next) {
-  // let checkmail = await userinfo.findOne({ email: req.body.email })
-  // let OtpCode = Math.floor(100000 + Math.random() * 900000)
-//   otp = OtpCode
-  // otpEmail = checkmail.email
   let mailTransporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -43,17 +30,7 @@ function otpvalidation(email,otpvalue){
 
 
 }
-// const userPostOtp = async function (req, res, next) {
-//   if (req.body.otp == otp) {
-//     let loger = await userdata.find({ useremail: otpEmail })
-//     req.session.user = loger[0].username
-//     name = loger[0].fullname
-//     console.log(loger);
-//     res.redirect('/')
-//   } else {
-//     res.redirect('/loginotp')
-//   }
-// }
+
 
 module.exports=otpvalidation
 
