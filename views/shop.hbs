@@ -107,11 +107,6 @@
                         <ul>
                             <li><a href="http://localhost:3000">Home</a></li>
                             <li class="active"><a href="http://localhost:3000/shop">Shop</a></li>
-                            <li><a href="http://localhost:3000/about">About us</a>
-                               
-                            </li>
-                            <li><a href="http://localhost:3000/blog">Blog</a></li>
-                            <li><a href="http://localhost:3000/contact">Contacts</a></li>
                         </ul>
                     </nav>
                 </div>
@@ -298,14 +293,15 @@
                     <div class="row" id="searchProduct">
  {{#each addnew}}
  
-                        <div class="col-lg-4 col-md-6 col-sm-6">
+                        <div class="col-lg-4 col-md-6 col-sm-3">
                             <div  class="product__item ">
-                             <div  class="product__item__pic set-bg" ><img style="height: 17rem; width: 15rem;" src="productimages/{{image.[0]}}" >   
+                             <div  class="product__item__pic set-bg" ><img style="height: 100%; width: 100%;" src="productimages/{{image.[0]}}" >   
                                     <ul class="product__hover">
-                                        <li><a href="#"><img src="img/icon/heart.png" alt=""></a></li>
+                                        <li><a href="/wishlistGet/{{_id}}"><img src="img/icon/heart.png" alt=""></a></li>
                                         <li><a href="#"><img src="img/icon/compare.png" alt=""> <span>Compare</span></a>
                                         </li>
-                                        <li><a href="/productAccsess/{{id}}"><img src="img/icon/search.png" alt=""></a></li>
+                                        
+                                        <li><a href="/productAccsess/{{_id}}"><img src="img/icon/search.png" alt=""></a></li>
                                     </ul>
                                 </div>
                                 <div class="product__item__text">

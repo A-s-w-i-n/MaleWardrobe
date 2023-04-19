@@ -1,6 +1,7 @@
 const mongoose=require('mongoose')
 mongoose.set('strictQuery',false)
-mongoose.connect("mongodb://127.0.0.1:27017/menfasion",{ useNewUrlParser: true })
+require('dotenv').config()
+mongoose.connect(process.env.MONGODB_URI,{ useNewUrlParser: true })
 
 
 const subcategorySchema=new mongoose.Schema({

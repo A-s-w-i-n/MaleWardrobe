@@ -77,9 +77,9 @@
                                 <a href="#">FAQs</a>
                             </div>
                             <div class="header__top__hover">
-                            
 
-                               
+
+
                             </div>
                         </div>
                     </div>
@@ -90,7 +90,8 @@
             <div class="row">
                 <div class="col-lg-3 col-md-3">
                     <div class="header__logo">
-                        <a href=""><img style="position: relative;right: 5rem ;" src="Screenshot (82).png" alt=""></a></a>
+                        <a href=""><img style="position: relative;right: 5rem ;" src="Screenshot (82).png"
+                                alt=""></a></a>
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-6">
@@ -147,7 +148,8 @@
                         {{#each image}}
                         <ul class="nav nav-tabs" role="tablist">
                             <li class="nav-item">
-                                <a style="height: 10rem;" class="zoom nav-link active" data-toggle="tab" href="" role="tab">
+                                <a style="height: 10rem;" class="zoom nav-link active" data-toggle="tab" href=""
+                                    role="tab">
                                     <div class=" product__thumb__pic set-bg"> <img style="width: 10rem;height:7rem;"
                                             src="productimages/{{this}}" alt="" id="{{@index}}" onclick="zoom(this.id)">
                                     </div>
@@ -167,88 +169,165 @@
                         <div class="tab-content">
                             <div class="tab-pane active" id="tabs-1" role="tabpanel">
                                 <div class="zoom product__details__pic__item">
-                                    <img src="productimages/{{image.[0]}}" id="imageview"  alt="">
+                                    <img src="productimages/{{image.[0]}}" id="imageview" alt="">
                                 </div>
                             </div>
                         </div>
                     </div>
-                    {{!--    --}}
+                    {{!-- --}}
                 </div>
             </div>
             <div class="product__details__content">
                 <div class="container">
                     <div class="row d-flex justify-content-center">
                         <form action="/addToCart/{{productId}}" method="post">
-                        <div class="col-lg-8">
-                            <div style="position: relative;left: 11rem;" class="product__details__text">
-                                <h4>{{productName}}</h4>
-                                <div class="rating">
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                  <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star-o"></i>
-                                    <span> - 5 Reviews</span>
-                                </div>
-                                <h3>₹{{price}} </h3>
-                                <p>{{discription}}</p>
-                                {{/each}}
-                                <div class="product__details__option">
-                                    <div class="product__details__option__size">
-                                        <span>Size:</span>
-                                        <label for="xxl">xxl
-                                            <input type="radio" id="xxl">
-                                        </label>
-                                        <label class="active" for="xl">xl
-                                            <input type="radio" id="xl">
-                                        </label>
-                                        <label for="l">l
-                                            <input type="radio" id="l">
-                                        </label>
-                                        <label for="sm">s
-                                            <input type="radio" id="sm">
-                                        </label>
+                            <div class="col-lg-8">
+                                <div style="position: relative;left: 11rem;" class="product__details__text">
+                                    <h4>{{productName}}</h4>
+                                    <div class="rating">
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star-o"></i>
+                                        <span> - 5 Reviews</span>
                                     </div>
-                                    <div class="product__details__option__color">
-                                        <span>Color:</span>
-                                        <label class="c-1" for="sp-1">
-                                            <input type="radio" id="sp-1">
-                                        </label>
-                                        <label class="c-2" for="sp-2">
-                                            <input type="radio" id="sp-2">
-                                        </label>
-                                        <label class="c-3" for="sp-3">
-                                            <input type="radio" id="sp-3">
-                                        </label>
-                                        <label class="c-4" for="sp-4">
-                                            <input type="radio" id="sp-4">
-                                        </label>
-                                        <label class="c-9" for="sp-9">
-                                            <input type="radio" id="sp-9">
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="product__details__cart__option">
-                                    <div class="quantity">
-                                        <div class="pro-qty">
-                                            <input type="text" value="1">
+                                    <h3>₹{{price}} </h3>
+                                    <p>{{discription}}</p>
+                                    {{/each}}
+                                    <div class="product__details__option">
+                                        <div class="product__details__option__size">
+                                            <span>Size:</span>
+                                            <label for="xxl">xxl
+                                                <input type="radio" id="xxl">
+                                            </label>
+                                            <label class="active" for="xl">xl
+                                                <input type="radio" id="xl">
+                                            </label>
+                                            <label for="l">l
+                                                <input type="radio" id="l">
+                                            </label>
+                                            <label for="sm">s
+                                                <input type="radio" id="sm">
+                                            </label>
+                                        </div>
+                                        <div class="product__details__option__color">
+                                            <span>Color:</span>
+                                            <label class="c-1" for="sp-1">
+                                                <input type="radio" id="sp-1">
+                                            </label>
+                                            <label class="c-2" for="sp-2">
+                                                <input type="radio" id="sp-2">
+                                            </label>
+                                            <label class="c-3" for="sp-3">
+                                                <input type="radio" id="sp-3">
+                                            </label>
+                                            <label class="c-4" for="sp-4">
+                                                <input type="radio" id="sp-4">
+                                            </label>
+                                            <label class="c-9" for="sp-9">
+                                                <input type="radio" id="sp-9">
+                                            </label>
                                         </div>
                                     </div>
-                                   
-                                   <button type="submit" class="primary-btn">Add To Cart</button>
-                                     </form>
+                                    <div class="product__details__cart__option">
+                                        <div class="quantity">
+                                            <div class="pro-qty">
+                                                <input type="text" value="1">
+                                            </div>
+                                        </div>
+
+                                        <button type="submit" class="primary-btn">Add To Cart</button>
+                        </form>
+                    </div>
+                    {{#if user}}
+                    {{#if reviewProuctFindId}}
+                    {{!-- {{#if reviewProduct.review.[0]}} --}}
+                  
+                    <form action="/review" method="post">
+                        <div class="form-outline">
+                            <textarea class="form-control" name="review" id="textAreaExample1" rows="4"></textarea>
+                            <label class="form-label" for="textAreaExample">Reviews</label>
+                            <button type="submit" class="btn btn-success">Submit</button>
+                        </div>
+                    </form>
+                    {{!-- {{/if}} --}}
+                    {{!-- {{/if}} --}}
+                    {{!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                        REVIEW --}}
+                        {{!-- </button> --}}
+                    {{else}}
+
+                    <button type="button" class="btn btn-primary " data-toggle="modal" data-target="#exampleModal">
+                        REVIEW
+                    </button>
+                    {{/if}}
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Product Review</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
                                 </div>
-                                <div class="product__details__btns__option">
-                                    <a href="#"><i class="fa fa-heart"></i> add to wishlist</a>
-                                    
+                                {{#each reviewProduct}}
+                                <tr>
+                                </tr>
+                                <div class="modal-body">
+                                    <td>{{user}}</td>:
+                                    <tr>
+                                        <td>{{review}}</td>
+                                    </tr>
                                 </div>
-                            
+                                {{/each}}
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                                </div>
                             </div>
                         </div>
                     </div>
-                   
+                    {{/if}}
+
+                    <button type="button" class="btn btn-primary " data-toggle="modal" data-target="#exampleModal">
+                        REVIEW
+                    </button>
+                    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Product Review</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                {{#each reviewProduct}}
+                                <tr>
+                                </tr>
+                                <div class="modal-body">
+                                    <td>{{user}}</td>:
+                                    <tr>
+                                        <td>{{review}}</td>
+                                    </tr>
+                                </div>
+                                {{/each}}
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+        </div>
+
+        </div>
+        </div>
     </section>
     <!-- Shop Details Section End -->
 
@@ -342,7 +421,7 @@
                         </div>
                         <div class="product__item__text">
                             <h6>Multi-pocket Chest Bag</h6>
-                           
+
                             <div class="rating">
                                 <i class="fa fa-star"></i>
                                 <i class="fa fa-star"></i>
@@ -376,7 +455,7 @@
                         </div>
                         <div class="product__item__text">
                             <h6>Diagonal Textured Cap</h6>
-                         
+
                             <div class="rating">
                                 <i class="fa fa-star-o"></i>
                                 <i class="fa fa-star-o"></i>
@@ -496,23 +575,24 @@
 
 
 
-    
-    <style>
-.zoom {
-  padding: 50px;
- 
-  transition: transform .2s; /* Animation */
-  width: 25rem;
-  height: 28rem;
-  margin-bottom: 10rem;
-  margin-left: 4rem;
-  
-}
 
-.zoom:hover {
-  transform: scale(1.4); 
-}
-</style>
+    <style>
+        .zoom {
+            padding: 50px;
+
+            transition: transform .2s;
+            /* Animation */
+            width: 25rem;
+            height: 28rem;
+            margin-bottom: 10rem;
+            margin-left: 4rem;
+
+        }
+
+        .zoom:hover {
+            transform: scale(1.4);
+        }
+    </style>
 
 
 </body>

@@ -1,7 +1,7 @@
 const  mongoose= require("mongoose")
-
+require('dotenv').config()
 mongoose.set('strictQuery', false);
-mongoose.connect("mongodb://127.0.0.1:27017/menfasion",{ useNewUrlParser: true })
+mongoose.connect(process.env.MONGODB_URI,{ useNewUrlParser: true })
 
 
 const userSchema=new mongoose.Schema({
@@ -28,8 +28,16 @@ const userSchema=new mongoose.Schema({
     usedCoupon:{
         type:String,
         require:true
+    },
+    userUsedCoupon:{
+        type:String,
+        require:true
+    },
+    wallet:{
+        type:Number,
+        require:true
     }
-
+   
 })
 
 

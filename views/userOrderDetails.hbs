@@ -6,43 +6,56 @@
       <th>Product Name </th>
       <th>Product Price</th>
        <th>Product Id</th>
+       <th>Ordered Date</th>
       
       
-       <th>Action</th>
+       <th>Payment Method</th>
+       <th>Deliverd Date</th>
       
     </tr>
   </thead>
   <tbody>
 
     {{#each userOrderDelivered}}
-    
+   
     
     <tr>
       <td>
+        {{#each productUserData}}
         <div class="d-flex align-items-center">
           <div class="ms-3">
-            <p class="fw-bold mb-1"><img style="width: 5rem;" src="productimages/{{product.image.[0]}}" alt=""></p>
+            <p class="fw-bold mb-1"><img style="width: 5rem;" src="/productimages/{{product.image.[0]}}" alt=""></p>
             
           </div>
         </div>
+          {{/each}}
       </td>
      
       
      <td>
-
+{{#each ../productUserData}}
         <p class="text-muted mb-0">{{product.productName}}</p>
       </td>
       
        <td>
-        <p class="text-muted mb-0">{{products.totalPrice}}</p>
+        <p class="text-muted mb-0">{{product.price}}</p>
       </td>
        <td>
         <p class="text-muted mb-0">{{product.productId}}</p>
       </td>
        <td>
+        {{/each}}
+  
+        <p class="text-muted mb-0">{{date}}</p>
+      </td>
+
+       <td>
         <p class="text-muted mb-0">{{paymentMethod}}</p>
       </td>
-      <td> <a href=""><button class="btn btn-primary">Details</button></a></td>
+       <td>
+        <p class="text-muted mb-0">{{deliveryDate}}</p>
+      </td>
+     
 
   
     

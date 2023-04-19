@@ -101,11 +101,7 @@
                         <ul>
                             <li><a href="http://localhost:3000">Home</a></li>
                             <li class="active"><a href="http://localhost:3000/shop">Shop</a></li>
-                            <li><a href="http://localhost:3000/about">About Us</a>
-
-                            </li>
-                            <li><a href="http://localhost:3000/blog">Blog</a></li>
-                            <li><a href="http://localhost:3000/contact">Contacts</a></li>
+                           
                         </ul>
                     </nav>
                 </div>
@@ -241,7 +237,10 @@
   <label for="payment"></label>COD<br>
   <input type="radio" id="onlinepayment" name="paymentmethod" value="onlinepayment">
   <label for="payment"></label>onlinepayment<br>
-
+  {{#if walletPass}}
+   <input type="radio" id="wallet" name="paymentmethod" value="wallet">
+  <label for="payment">Wallet</label>
+{{/if}}
 
 
 

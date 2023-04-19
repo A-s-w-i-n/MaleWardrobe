@@ -153,64 +153,48 @@
 
   </aside><!-- End Sidebar-->
    <main id="main" class="main">
-<table id="myTable" class="table align-middle mb-0 bg-white mt-5 pt-5">
+<tr>
+  <td>
+   <a href="/salesReports/?name=day"> <button class="btn btn-primary">Dayily</button></a>
+   <a href="/salesReports/?name=month"> <button class="btn btn-primary">Monthly</button></a>
+   <a href="/salesReports/?name=year"> <button class="btn btn-primary">Yearly</button></a>
+    </td>
+</tr>
+<br>
+<br>
+<table id="myTable" class="table align-middle mb-0 bg-white mt-5 pt-5 ">
+  <button  onclick="printTable()">Generate PDF</button> 
+             <br>
+             <br>
+        <button id="datatable" onclick="exportToExcel()">Export to Excel</button>
   <thead class="bg-light">
     
  
-      <th>Image</th>
-      <th>Product Name </th>
+      <th>Date</th>
+      <th> User </th>
       
-       <th>Product Id</th>
+       <th>productId</th>
       
-      <th>Delivery Address</th>
-      <th>Product Price</th>
-      <th>Ordered Date</th>
-      <th>Delivery Date</th>
-      <th>Payment Method</th>
-      {{#each productData}}
-      {{#if cancelStatus}}
-      <button></button>
-      {{else}}
-      {{#if removeStat}}
-
-      
-      
-                                  {{else}}
-                                   <th>
-          <div  class="dropdown"></div>
-                                  <a style="color: black;background-color: rgb(255, 255, 255);" class="btn btn-primary btn-sm dropdown-toggle" href="" role="button" data-bs-toggle="dropdown" aria-expanded="false">Action</a>
-         <ul style="width: 2rem;"  class="dropdown-menu">
-                                     {{!-- <li><a  class="dropdown-item"  href=""><button type="button" class="btn btn-hidden"  >cancel</button></a></li> --}}
-                                    <li><a class="dropdown-item" href="">Cancel</a></li>
-                                     <li ><a  class="dropdown-item" href="/adminReturnConfirm/{{_id}}">Return Confirm</a></li>
-                                     <li ><a  class="dropdown-item" href="/orderDeliverd/{{_id}}">Deliverd</a></li>
-                                  </ul></th>
-                                  {{/if}}
-                                  {{/if}}
-                                  {{/each}}
+      <th>Quandity</th>
+      <th>Price</th>
+      <th>Total Price</th>
       
     </tr>
   </thead>
   <tbody>
+    {{#each salesDatas}}
 
 
-    {{#each productData}}
+  
     
     
     
     <tr>
-      <td>
-        <div class="d-flex align-items-center">
-          <div class="ms-3">
-            <p class="fw-bold mb-1"><img style="width: 5rem;" src="productimages/{{product.image.[0]}}" alt=""></p>
-            
-          </div>
-        </div>
-      </td>
+     
      
       
      <td>
-        <p class="text-muted mb-0">{{product.productName}}</p>
+        <p class="text-muted mb-0">{{salesDate}}</p>
       </td>
       
       
@@ -219,40 +203,31 @@
       
       
        <td>
-        <p class="text-muted mb-0">{{product.productId}}</p>
+        <p class="text-muted mb-0">{{orderedUser}}</p>
       </td>
-{{#each ../productDataDetails}}
+
        <td>
       
-        <p class="text-muted mb-0">{{deliveryAddress.housename}},{{deliveryAddress.postalCode}},
-          {{deliveryAddress.city}}.{{deliveryAddress.state}},{{deliveryAddress.country}}</p>
+        <p class="text-muted mb-0">{{product.productId}}</p>
      
       </td>
        <td>
         
-        <p class="text-muted mb-0">{{products.totalPrice}}</p>
+        <p class="text-muted mb-0">{{quantity}}</p>
         
       </td>
        <td>
         
-        <p class="text-muted mb-0">{{date}}</p>
+        <p class="text-muted mb-0">{{product.price}}</p>
         
       </td>
        <td>
         
-        <p class="text-muted mb-0">{{deliveryDate}}</p>
+        <p class="text-muted mb-0">{{grandTotal}}</p>
         
       </td>
-       <td>
-        
-        <p class="text-muted mb-0">{{paymentMethod}}</p>
-        
-      </td>
-      <td>
-        <p class="text-muted mb-0">{{orderStatus}}</p>
-      </td>
-      {{/each}}
-    
+      
+     
      
       {{!-- <td><a href="/orderStatus/{{_id}}"><button name="confirm" class="btn btn-primary"> hgfhsgfdhg</button></a></td> --}}
    
@@ -264,7 +239,7 @@
     
      
     </tr>
-  {{/each}}
+{{/each}}
   </tbody>
  
 </table> 
@@ -283,4 +258,41 @@ $(document).ready( function () {
 
   <link rel="stylesheet" href="css/style.css">
   
+  <script>
+        function exportToExcel() {
+            // Create a new Excel workbook and worksheet
+            var workbook = XLSX.utils.book_new();
+            var worksheet = XLSX.utils.table_to_sheet(document.getElementById("myTable"));
+
+            // Add the worksheet to the workbook
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+
+            // Save the workbook as an Excel file
+            var file = XLSX.write(workbook, { bookType: "xlsx", type: "binary" });
+            saveAs(new Blob([s2ab(file)], { type: "application/octet-stream" }), "myTable.xlsx");
+        }
+
+        // Utility function to convert a string to an ArrayBuffer
+        function s2ab(s) {
+            var buf = new ArrayBuffer(s.length);
+            var view = new Uint8Array(buf);
+            for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xff;
+            return buf;
+        }
+    </script>
+
+       {{!-- ////////////////////////////////////////////// --}}
+            <script>
+                function printTable() {
+			var table = document.getElementById("datatable");
+			var newWin = window.open('', 'Print-Window');
+			newWin.document.open();
+			newWin.document.write('<html><body onload="window.print()">' + table.outerHTML + '</html>');
+			newWin.document.close();
+			setTimeout(function () { newWin.close(); }, 10);
+		}
+            </script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.8/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+            {{!-- ///////////////////////////////////// --}}
 </body>

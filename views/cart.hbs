@@ -101,9 +101,7 @@
                         <ul>
                             <li><a href="http://localhost:3000">Home</a></li>
                             <li class="active"><a href="http://localhost:3000/shop">Shop</a></li>
-                            <li><a href="http://localhost:3000/about">About Us</a> </li>
-                            <li><a href="http://localhost:3000/blog">Blog</a></li>
-                            <li><a href="http://localhost:3000/contact">Contacts</a></li>
+                           
                         </ul>
                     </nav>
                 </div>
@@ -242,6 +240,7 @@
                         
                         <li id="grandTotal" >{{grand_Total}}</li>
                         <p class="text-danger" id="carterr">{{carterr}}</p>
+                        <p class="text-danger" id="stockerr">{{stockmessage}}</p>
                    
                     </ul>
                     
@@ -391,6 +390,12 @@
             success: (response) => {
                 
                if(response['status']){
+                if(response.stockmessage){
+                    document.getElementById('stockerr').innerHTML=response.stockmessage
+                    return
+                }else{
+                    document.getElementById('stockerr').innerHTML=""
+                }
                 if(response.stockmsg){
                     document.getElementById('carterr').innerHTML=response.stockmsg
                     

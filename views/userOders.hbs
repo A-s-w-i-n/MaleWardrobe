@@ -50,11 +50,14 @@
      {{#if userOrderDeliveredId}}
 
 
+   
      {{else}}
+      {{#if cancelStatus}}
+      <p class="text-success">Order Canceled</p>
+      
+      {{else}}
       {{#if newReturnStats }}
       {{#if ConfirmReturnStatus}}
-      
-
       <p class="text-success">Return Confirmed</p>
 
       {{else}}
@@ -64,12 +67,15 @@
       {{else}}
       {{#if  deliveredStatus}}
 
-      <p>Product Deliverd</p>
+      <a href="/userReturn/{{_id}}/{{grandTotal}}"><button class="btn btn-primary">Return</button></a></td></td>
       {{else}}
-      <a href="/userReturn/{{_id}}"><button class="btn btn-primary">Return</button></a></td></td>
+      <a href="/orderCancel/{{_id}}"><button class="btn btn-primary">cancel</button></a>
+      <p>OrderConfirmed</p>
       {{/if}}
        {{/if}}
        {{/if}}
+      {{/if}}
+      
 
       
       

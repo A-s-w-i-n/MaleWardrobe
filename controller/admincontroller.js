@@ -30,8 +30,24 @@ const adminlogin = function (req, res, next) {
 }
 const adminhome =async function (req, res, next) {
     try {
+
         
-        res.render('adminhome')
+        let revenue;
+        let UserTotalCount=await userinfo.find().count()
+
+        let BannedUser=await userinfo.find({status:false}).count()
+
+        let totalOrder=await orderinfo.find({orderStatus:"Delivered"}).count()
+        let pendingOrder=await orderinfo.find({orderStatus:"orderConfirmed"}).count()
+
+        let totalRvenue=await orderinfo.aggregate([{$match:{orderStatus:"Delivered"}},{$group:{_id:null,sum:{$sum:"$grandTotal"}}},{$project:{_id:0}}])
+        console.log(totalRvenue[0]);
+        if(totalRvenue.length!=0){
+             revenue=totalRvenue[0].sum
+        }else{
+            revenue=0
+        }
+        res.render('adminhome',{UserTotalCount,BannedUser,totalOrder,revenue,pendingOrder})
     } catch (error) {
         console.log(error)
         next()
@@ -329,14 +345,16 @@ const editexistproductpost = async function (req, res, next) {
 const newcategoryaddpost = async function (req, res, next) {
     try {
         
-        const addcategorynew = req.body
-        const  categoryExist=await categoryinfo.findOne({name:req.body.category})
-        var results = new RegExp('[\\?&]' + req.body.category + '=([^&#]*)', "i")
-            if(categoryExist&&results){
+       let regex = new RegExp(req.body.category,"i")
+        const  categoryExist=await categoryinfo.findOne({name:{$regex:regex}})
+        console.log(categoryExist);
+            if(categoryExist){
                 res.redirect('/addcategory')
              let  categorymsg="Category alredy exist"
              req.session.categorymsg=categorymsg
-            }else{
+            }
+          
+            else{
                  categoryinfo.insertMany({ name: req.body.category, status: true })
             res.redirect('/addcategory')
             }
@@ -368,7 +386,7 @@ const desable = async function (req, res, next) {
 
         await categoryinfo.updateOne({ _id: desableStatus }, { $set: { status: false } })
         let categorname=await categoryinfo.find({_id:desableStatus})
-        await productinfo.updateOne({category:categorname},{$set:{desableProduct:false}})
+       
         res.redirect('/addcategory')
     } catch (error) {
         console.log(error)
@@ -508,25 +526,35 @@ const bannerAdmin=async function(req,res,next){
 }
         
 const desableBanner=async function(req,res,next){
-  bannerDesableStatus=req.params.id
-
-  await bannerinfo.updateOne({_id:bannerDesableStatus},{$set:{status:false}})
-    res.redirect('/Banner')
+    try {
+        
+        bannerDesableStatus=req.params.id
+      
+        await bannerinfo.updateOne({_id:bannerDesableStatus},{$set:{status:false}})
+          res.redirect('/Banner')
+    } catch (error) {
+        next()
+    }
 }
 
 const enableBanner=async function(req,res,next){
-    bannerEnableStatus=req.params.id
-
-    await bannerinfo.updateOne({_id:bannerEnableStatus},{$set:{status:true}})
-
-    res.redirect("/Banner")
+    try {
+        bannerEnableStatus=req.params.id
+    
+        await bannerinfo.updateOne({_id:bannerEnableStatus},{$set:{status:true}})
+    
+        res.redirect("/Banner")
+        
+    } catch (error) {
+        next()
+    }
 }
 const adminCoupon=async function(req,res,next){
     try {
-        
+        let couponerr=req.session.couponerr
            const couponData=await couponinfo.find()
        
-           res.render('coupon',{couponData})
+           res.render('coupon',{couponData,couponerr})
         
     } catch (error) {
         console.log(error)
@@ -537,10 +565,22 @@ const addCoupon=async function(req,res,next){
     try {
         
         const couponDetaile=req.body
-        console.log(couponDetaile);
-        await  couponinfo.insertMany([couponDetaile])
         
-            res.redirect('/coupon')
+        const regex=new RegExp(req.body.couponCode,"i")
+
+  const couponExist=await couponinfo.findOne({couponCode:{$regex:regex}})
+
+  if(couponExist){
+    res.redirect('/coupon')
+    let couponerr="coupon is already exist"
+
+    req.session.couponerr=couponerr
+  }else{
+
+      await  couponinfo.insertMany([couponDetaile])
+      
+          res.redirect('/coupon')
+  }
     } catch (error) {
         console.log(error)
         next()
@@ -548,81 +588,217 @@ const addCoupon=async function(req,res,next){
 }
 const statusOrder=async function(req,res,next){
 
-    const statusOrder=req.params.id
-
+    try {
+        
+        const statusOrder=req.params.id
+    const orderConfirmed=await orderinfo.updateOne({_id:statusOrder},{$set:{orderStatus:"Order Confirmed"}})
+    req.session.orderConfirmed=orderConfirmed
     
-const orderConfirmed=await orderinfo.updateOne({_id:statusOrder},{$set:{orderStatus:"Order Confirmed"}})
+        res.redirect('/adminOrderedProduct')
+    } catch (error) {
+        next()
+    }
 
-
-req.session.orderConfirmed=orderConfirmed
-
-    res.redirect('/adminOrderedProduct')
   }
 
  const  editCoupon=async function(req,res,next){
 
-    let coupondatas=req.params.id
-    req.session.coupondatas=coupondatas
+    try {
+        
+        let coupondatas=req.params.id
+        req.session.coupondatas=coupondatas
+    
+    const couponupdate=await couponinfo.find({_id:coupondatas})
+        res.render('couponEdit',{couponupdate})
+    } catch (error) {
+        
+    }
 
-const couponupdate=await couponinfo.find({_id:coupondatas})
-
-
-
-
-    res.render('couponEdit',{couponupdate})
 }
     
 const proceedCouponUpdate=async function(req,res,next){
-let coupondatas=req.session.coupondatas
-    await couponinfo.updateOne({_id:coupondatas},{$set:{
-
-   couponCode:req.body.couponcode,
-   discountPrice:req.body.discountprice,
-   createDate:req.body.createdate,
-   MinimumPrice:req.body.minimumprice,
-   expireDate:req.body.expiredate,
-   discountType:req.body.discounttype
-
-    }})
-    res.redirect('/coupon')
+    try {
+        
+        let coupondatas=req.session.coupondatas
+            await couponinfo.updateOne({_id:coupondatas},{$set:{
+        
+           couponCode:req.body.couponcode,
+           discountPrice:req.body.discountprice,
+           createDate:req.body.createdate,
+           MinimumPrice:req.body.minimumprice,
+           expireDate:req.body.expiredate,
+           discountType:req.body.discounttype
+        
+            }})
+            res.redirect('/coupon')
+    } catch (error) {
+        next()
+        
+    }
   }
   const adminConfirmReturn=async function(req,res,next){
+    try {
+        
 
-  const adminRerurnConfirmationId=req.params.id
-
-    await  orderinfo.updateOne({_id:new ObjectId(adminRerurnConfirmationId)},{$set:{orderStatus:"return confirmed"}})
-
-    await orderinfo.updateOne({_id:new ObjectId(adminRerurnConfirmationId)},{$set:{newReturnStats:"retrn confirmed"}})
-
-    await orderinfo.updateOne({_id:new ObjectId(adminRerurnConfirmationId)},{$set:{ConfirmReturnStatus:"confirmed"}})
-    res.redirect('/orderManagement')
-}
-const deliveredOrder=async function(req,res,next){
-
-    const DeliveredOrderId=req.params.id
-
-    await orderinfo.updateOne({_id:new ObjectId(DeliveredOrderId) },{$set:{orderStatus:"Delivered"}})
-
-     await orderinfo.updateOne({_id:new ObjectId(DeliveredOrderId)},{$set:{deliveredStatus:"Delivered"}})
-
-
-
-    res.redirect('/orderManagement')
-}
-const deleteEditImg=async function(req,res,next){
-     
-    const editImgDelete=req.query.index
-    const editImgDeleteId=req.query.productId
-    console.log(req.query);
-    const image=req.files
-
-   await productinfo.updateOne({productId:editImgDeleteId},{$pull:{image:image}})
-
-    // const imageEditSelect=editImageFind[editImgDelete]
+        const adminRerurnConfirmationId=req.params.id
+         
+      
+          await  orderinfo.updateOne({_id:new ObjectId(adminRerurnConfirmationId)},{$set:{orderStatus:"return confirmed"}})
+      
+          await orderinfo.updateOne({_id:new ObjectId(adminRerurnConfirmationId)},{$set:{newReturnStats:"retrn confirmed"}})
+      
+          await orderinfo.updateOne({_id:new ObjectId(adminRerurnConfirmationId)},{$set:{ConfirmReturnStatus:"confirmed"}})
 
     
+          res.redirect('/orderManagement')
+    } catch (error) {
+        
+        next()
+    }
 
-    res.redirect('/editproduct')
+}
+const deliveredOrder=async function(req,res,next){
+    try {
+        
+        const DeliveredOrderId=req.params.id
+
+        const salesDate=new Date().toLocaleString()
+    
+        await orderinfo.updateOne({_id:new ObjectId(DeliveredOrderId) },{$set:{orderStatus:"Delivered"}})
+    
+         await orderinfo.updateOne({_id:new ObjectId(DeliveredOrderId)},{$set:{deliveredStatus:"Delivered"}})
+
+         await orderinfo.updateOne({_id:new ObjectId(DeliveredOrderId)},{$set:{salesDate:salesDate}})
+    
+        res.redirect('/orderManagement')
+    } catch (error) {
+        next()
+    }
+
+}
+const deleteEditImg=async function(req,res,next){
+    try {
+        
+        const editImgDelete=req.query.index
+        const editImgDeleteId=req.query.productId
+        console.log(req.query);
+        const image=req.files
+    
+       await productinfo.updateOne({productId:editImgDeleteId},{$pull:{image:image}})
+    
+        // const imageEditSelect=editImageFind[editImgDelete]
+    
+        
+    
+        res.redirect('/editproduct')
+    } catch (error) {
+        next()
+    } 
+
+}
+
+const salesReport=async function(req,res,next){
+    try {
+        
+        let salesDatas=await orderinfo.aggregate([{$match:{orderStatus:"Delivered"}},{$unwind:"$products"},{$project:{product:"$products.product",quantity:"$products.quantity",totalPrice:"$products.totalPrice",orderedUser:"$orderedUser",grandTotal:"$grandTotal",deliveryDate:"$deliveryDate",salesDate:"$salesDate",user:"$deliveryAddress.name"}}])
+    
+        console.log(salesDatas);
+        if(req.session.report){
+            salesDatas=req.session.report
+            res.render('salesReport',{salesDatas})
+            req.session.report=null
+        }else{
+
+            res.render('salesReport',{salesDatas})
+        }
+    
+    } catch (error) {
+        console.log(error);
+        next()
+        
+    }
+ 
+  }
+  const allSalesReport=async function(req,res,next){
+    try {
+        
+        const salesParams=req.query.name
+    
+        if(salesParams=="day"){
+            const today=new Date()
+            const todayDate=today.toLocaleDateString()
+    
+            const tomorrow=new Date(today)
+            tomorrow.setDate(today.getDate()+1)
+            const tomorrowDate=tomorrow.toLocaleDateString()
+    
+            console.log(todayDate);
+            console.log(tomorrowDate);
+    
+    
+            const dailySalesReport=await orderinfo.aggregate([{
+                $unwind:"$products"
+            },
+            {
+                $match:{orderStatus:"Delivered"}
+            },
+            {
+                $match:{
+                    salesDate:{$gte:todayDate,$lte:tomorrowDate}
+                }
+            },
+            {$project:{product:"$products.product",quantity:"$products.quantity",totalPrice:"$products.totalPrice",orderedUser:"$orderedUser",grandTotal:"$grandTotal",deliveryDate:"$deliveryDate",salesDate:"$salesDate",user:"$deliveryAddress.name"}}
+        ])
+        console.log(dailySalesReport);
+    req.session.report=dailySalesReport
+    
+        }else if(salesParams=="month"){
+        
+            const currentDate=new Date()
+            const currentMonth= currentDate.getMonth()
+            const currentYear= currentDate.getFullYear()
+    
+            const firstDayOfMonth=new Date(currentYear,currentMonth,1).toLocaleDateString()
+            const lastDayOfMonth=new Date(currentYear,currentMonth+1,0).toLocaleDateString()
+    
+    
+            console.log(firstDayOfMonth);
+            console.log(lastDayOfMonth);
+    
+            const monthlySalesReport=await orderinfo.aggregate([{
+                $unwind:"$products"
+            },
+            {
+                $match:{orderStatus:"Delivered"}
+            },
+            {
+                $match:{salesDate:{$gte:firstDayOfMonth,$lte:lastDayOfMonth}}
+            },
+            {$project:{product:"$products.product",quantity:"$products.quantity",totalPrice:"$products.totalPrice",orderedUser:"$orderedUser",grandTotal:"$grandTotal",deliveryDate:"$deliveryDate",salesDate:"$salesDate",user:"$deliveryAddress.name"}}
+              
+        ])
+        console.log(monthlySalesReport);
+        req.session.report=monthlySalesReport
+        }else{
+           const  yearlySalesReport=await orderinfo.aggregate([{
+            $unwind:"$products"
+           },
+           {
+            $match:{orderStatus:"Delivered"}
+           },
+           
+            {$project:{product:"$products.product",quantity:"$products.quantity",totalPrice:"$products.totalPrice",orderedUser:"$orderedUser",grandTotal:"$grandTotal",deliveryDate:"$deliveryDate",salesDate:"$salesDate",user:"$deliveryAddress.name"}}
+           
+        ])
+        }
+    
+    
+    
+        res.redirect('/adminSalesReport')
+    } catch (error) {
+        next()
+    }
+   
 }
 
 
@@ -665,5 +841,7 @@ module.exports = {
     proceedCouponUpdate,
     adminConfirmReturn,
     deliveredOrder,
-    deleteEditImg
+    deleteEditImg,
+    salesReport,
+    allSalesReport
 }

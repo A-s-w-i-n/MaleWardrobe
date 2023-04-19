@@ -1,0 +1,64 @@
+   <main id="main" class="main">
+<table id="myTable" class="table align-middle mb-0 bg-white mt-5 pt-5">
+  <thead class="bg-light">
+    
+      <th>index</th>
+      <th>Total Amount</th>
+      <th>Order Id</th>
+      <th>Returned Date</th>
+    
+     
+      
+    </tr>
+  </thead>
+  <tbody>
+
+   
+    {{#each walletDatas}}
+    
+    <tr>
+     <td>
+        <p class="text-muted mb-0">{{@index}}</p>
+      </td>
+      
+       <td>
+        <p class="text-muted mb-0">{{grandTotal}}</p>
+      </td>
+       <td>
+       
+        <p class="text-muted mb-0">{{_id}}</p>
+      
+      </td>
+
+      <td>
+        <p class="text-muted mb-0">{{returnDate}}</p>
+      </td>
+     
+     
+    
+    
+      {{/each}}
+      
+    
+     
+    </tr>
+  
+  </tbody>
+ 
+</table> 
+ 
+
+    <tr>
+<script >
+$(document).ready( function () {
+    $('#myTable').DataTable();
+})
+</script> 
+<script src="assets/js/main.js"></script>
+  <link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <link rel="stylesheet" href="css/style.css">
+  
+</body>

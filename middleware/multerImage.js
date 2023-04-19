@@ -14,6 +14,24 @@ const storage = multer.diskStorage({
         cb(null,name)
     }
 })
-const upload =multer({storage:storage})
+
+ const fileFilter=function(req,file,cb){
+    const fileTyps=/jpeg|jpg|png|gif|avif|webp/
+
+    const extname=fileTyps.test(path.extname(file.originalname).toLowerCase())
+
+    const mimetype=fileTyps.test(file.mimetype)
+    if(mimetype&&extname){
+        return cb(null,true)
+
+    }else{
+        cb("Error: Images Only")
+    }
+ }
+
+const upload =multer({
+    storage:storage,
+    fileFilter:fileFilter
+})
 
 module.exports={upload}

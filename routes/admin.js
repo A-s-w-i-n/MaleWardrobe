@@ -29,9 +29,12 @@ router.get('/coupon',adminsession.adminSession,adminget.adminCoupon)
 router.get('/orderStatus/:id',adminsession.adminSession,adminget.statusOrder)
 router.get('/couponEdit/:id',adminsession.adminSession,adminget.editCoupon)
 router.post('/updateEdit',adminsession.adminSession,adminget.proceedCouponUpdate)
-router.get('/adminReturnConfirm/:id',adminget.adminConfirmReturn)
-router.get('/orderDeliverd/:id',adminget.deliveredOrder)
-router.get('/deleteEditImage/',adminget.deleteEditImg)
+router.get('/adminReturnConfirm/:id',adminsession.adminSession,adminget.adminConfirmReturn)
+router.get('/orderDeliverd/:id',adminsession.adminSession,adminget.deliveredOrder)
+router.get('/deleteEditImage/',adminsession.adminSession,adminget.deleteEditImg)
+router.get('/adminSalesReport',adminsession.adminSession,adminget.salesReport)
+router.get('/salesReports/',adminget.allSalesReport)
+
 
 // router.get('/deleteuser/:id', adminget.deleteOne)
 
