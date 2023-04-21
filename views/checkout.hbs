@@ -108,12 +108,12 @@
                 <div class="col-lg-3 col-md-3">
                     <div class="header__nav__option">
                         <a href="#" class="search-switch"><img src="img/icon/search.png" alt=""></a>
-                        <a href="http://localhost:3000/wishlist"><img src="img/icon/heart.png" alt=""></a>
-                        <a href="http://localhost:3000/cart"><img src="img/icon/cart.png" alt=""> <span>0</span></a>
-                        <a href="http://localhost:3000/checkout">
+                        <a href="/wishlist"><img src="img/icon/heart.png" alt=""></a>
+                        <a href="/cart"><img src="img/icon/cart.png" alt=""> <span>0</span></a>
+                        <a href="/checkout">
                             <div class="price"><i class="fa-regular fa-credit-card"></i></div>
                         </a>
-                        <a href="http://localhost:3000/profile">
+                        <a href="/profile">
                             <div class="price"> <i class="fa-regular fa-user"></i></div>
                         </a>
 
@@ -159,7 +159,7 @@
                                 <div class="col-lg-6">
                                     <div class="checkout__input">
                                         <p>Name<span>*</span></p>
-                                        <input type="text" name="name" value="{{userCheck.user}}">
+                                        <input type="text" name="name" value="{{user1.name}}">
                                     </div>
                                 </div>
 
@@ -167,19 +167,19 @@
                            
                             <div class="col-md-6 checkout__input">
                                 <p>HouseName<span>*</span></p>
-                                <input type="text" name="housename" value="{{addressDetail.name}}">
+                                <input type="text" name="housename" value="{{addressDetail.address.name}}">
                             </div>
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="checkout__input">
                                         <p>state<span>*</span></p>
-                                        <input type="text" name="state" value="{{addressDetail.state}}">
+                                        <input type="text" name="state" value="{{addressDetail.address.state}}">
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="checkout__input">
                                         <p>City<span>*</span></p>
-                                        <input type="text" name="city" value="{{addressDetail.city}}">
+                                        <input type="text" name="city" value="{{addressDetail.address.city}}">
                                     </div>
                                 </div>
                             </div>
@@ -187,13 +187,13 @@
                                 <div class="col-lg-6">
                                     <div class="checkout__input">
                                         <p>country<span>*</span></p>
-                                        <input type="text" name="country" value="{{addressDetail.country}}">
+                                        <input type="text" name="country" value="{{addressDetail.address.country}}">
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="checkout__input">
                                         <p>postalcode<span>*</span></p>
-                                        <input type="text" name="postalcode" value="{{addressDetail.postalcode}}">
+                                        <input type="text" name="postalcode" value="{{addressDetail.address.postalcode}}">
                                     </div>
                                 </div>
                             </div>
@@ -243,21 +243,6 @@
 {{/if}}
 
 
-
-                                {{!-- <div class="checkout__input__checkbox">
-                                    <label for="payment">
-                                        onlinepayment
-                                        <input type="radio" id="payment" value="onlinepayment" name="paymentmethod">
-                                        <span class="checkmark"></span>
-                                    </label>
-                                </div>
-                                <div class="checkout__input__checkbox">
-                                    <label for="payment">
-                                        COD
-                                        <input type="radio" id="payment" name="paymentmethod" value="COD">
-                                        <span class="checkmark"></span>
-                                    </label>
-                                </div> --}}
                                 <button type="submit"   class="site-btn">PLACE ORDER</button>
                             </div>
                         </div>

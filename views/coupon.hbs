@@ -240,7 +240,7 @@
        <th>Min Purchase</th>
        <th>createDate</th>
        <th>Expire Date</th>
-       <th>Status</th>
+       {{!-- <th>Status</th> --}}
       
        <th>Action</th>
       
@@ -271,14 +271,12 @@
        <td>
         <p class="text-muted mb-0">{{expireDate}}</p>
       </td>
-       <td>
-        <p class="text-muted mb-0">{{status}}</p>
-      </td>
-      {{#if status}}
+     
+      {{!-- {{#if status}}
       <td><a href="/couponDesable/{{_id}}"><button type="button" class="btn btn-danger">Desable</button></a></td>
       {{else}}
        <td><a href="/couponEnable/{{_id}}"><button type="button" class="btn btn-primary">Enable</button></a></td>
-{{/if}}
+{{/if}} --}}
         <td><a href="couponEdit/{{_id}}"><button type="button" class="btn btn-success">Edit</button></a></td>
     </tr>
     {{/each}}

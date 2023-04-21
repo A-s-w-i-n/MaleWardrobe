@@ -39,19 +39,15 @@
                 <a href="#">FAQs</a>
             </div>
             <div class="offcanvas__top__hover">
-                <span>Usd <i class="arrow_carrot-down"></i></span>
-                <ul>
-                    <li>USD</li>
-                    <li>EUR</li>
-                    <li>USD</li>
-                </ul>
+            
+               
             </div>
         </div>
         <div class="offcanvas__nav__option">
-            <a href="#" class="search-switch"><img src="img/icon/search.png" alt=""></a>
-            <a href="#"><img src="img/icon/heart.png" alt=""></a>
-            <a href="#"><img src="img/icon/cart.png" alt=""> <span>0</span></a>
-            <div class="price">$0.00</div>
+           <a href="/profile"><div class="price"> <i class="fa-regular fa-user"></i></div></a>
+            <a href="/wishlist"><img src="img/icon/heart.png" alt=""></a>
+            <a href="/cart"><img src="img/icon/cart.png" alt=""> <span>0</span></a>
+          
         </div>
         <div id="mobile-menu-wrap"></div>
         <div class="offcanvas__text">
@@ -90,7 +86,7 @@
             <div class="row">
                 <div class="col-lg-3 col-md-3">
                     <div class="header__logo">
-                        <a href=""><img style="position: relative;right: 5rem ;" src="Screenshot (82).png"
+                        <a href=""><img style="position: relative;right: 2%;width: 80%;" src="Screenshot (82).png"
                                 alt=""></a></a>
                     </div>
                 </div>
@@ -99,17 +95,8 @@
                         <ul>
                             <li><a href="http://localhost:3000">Home</a></li>
                             <li class="active"><a href="http://localhost:3000/shop">Shop</a></li>
-                            <li><a href="#">Pages</a>
-                                <ul class="dropdown">
-                                    <li><a href="./about.html">About Us</a></li>
-                                    <li><a href="./shop-details.html">Shop Details</a></li>
-                                    <li><a href="./shopping-cart.html">Shopping Cart</a></li>
-                                    <li><a href="./checkout.html">Check Out</a></li>
-                                    <li><a href="./blog-details.html">Blog Details</a></li>
-                                </ul>
-                            </li>
-                            <li><a href="./blog.html">Blog</a></li>
-                            <li><a href="./contact.html">Contacts</a></li>
+                           
+                         
                         </ul>
                     </nav>
                 </div>
@@ -117,8 +104,10 @@
                     <div class="header__nav__option">
                         <a href="#" class="search-switch"><img src="img/icon/search.png" alt=""></a>
                         <a href="#"><img src="img/icon/heart.png" alt=""></a>
-                        <a href="#"><img src="img/icon/cart.png" alt=""> <span>0</span></a>
-                        <div class="price">$0.00</div>
+                        <a href="/cart"><img src="img/icon/cart.png" alt=""> <span>0</span></a>
+                        <a href="/profile">
+                        <div class="price"><i class="fa-regular fa-user"></i></a></div>
+                      
                     </div>
                 </div>
             </div>
@@ -148,9 +137,9 @@
                         {{#each image}}
                         <ul class="nav nav-tabs" role="tablist">
                             <li class="nav-item">
-                                <a style="height: 10rem;" class="zoom nav-link active" data-toggle="tab" href=""
+                                <a style="height: 100%; width: 100%;" class="zoom nav-link active" data-toggle="tab" href=""
                                     role="tab">
-                                    <div class=" product__thumb__pic set-bg"> <img style="width: 10rem;height:7rem;"
+                                    <div class=" product__thumb__pic set-bg"> <img style="width: 100%;height:100%;padding-top: 30%;position: relative;right: 20%;"
                                             src="productimages/{{this}}" alt="" id="{{@index}}" onclick="zoom(this.id)">
                                     </div>
                                 </a>
@@ -169,7 +158,7 @@
                         <div class="tab-content">
                             <div class="tab-pane active" id="tabs-1" role="tabpanel">
                                 <div class="zoom product__details__pic__item">
-                                    <img src="productimages/{{image.[0]}}" id="imageview" alt="">
+                                    <img style="position: relative;right: 10%;" src="productimages/{{image.[0]}}" id="imageview" alt="">
                                 </div>
                             </div>
                         </div>
@@ -181,8 +170,8 @@
                 <div class="container">
                     <div class="row d-flex justify-content-center">
                         <form action="/addToCart/{{productId}}" method="post">
-                            <div class="col-lg-8">
-                                <div style="position: relative;left: 11rem;" class="product__details__text">
+                            <div class="col-lg-8 col-md-6 col-sm-12">
+                                <div style="position: relative;left: 35%; width: 70%;" class="product__details__text">
                                     <h4>{{productName}}</h4>
                                     <div class="rating">
                                         <i class="fa fa-star"></i>
@@ -211,31 +200,10 @@
                                                 <input type="radio" id="sm">
                                             </label>
                                         </div>
-                                        <div class="product__details__option__color">
-                                            <span>Color:</span>
-                                            <label class="c-1" for="sp-1">
-                                                <input type="radio" id="sp-1">
-                                            </label>
-                                            <label class="c-2" for="sp-2">
-                                                <input type="radio" id="sp-2">
-                                            </label>
-                                            <label class="c-3" for="sp-3">
-                                                <input type="radio" id="sp-3">
-                                            </label>
-                                            <label class="c-4" for="sp-4">
-                                                <input type="radio" id="sp-4">
-                                            </label>
-                                            <label class="c-9" for="sp-9">
-                                                <input type="radio" id="sp-9">
-                                            </label>
-                                        </div>
+                                        
                                     </div>
                                     <div class="product__details__cart__option">
-                                        <div class="quantity">
-                                            <div class="pro-qty">
-                                                <input type="text" value="1">
-                                            </div>
-                                        </div>
+                                       
 
                                         <button type="submit" class="primary-btn">Add To Cart</button>
                         </form>
@@ -247,8 +215,8 @@
                     <form action="/review" method="post">
                         <div class="form-outline">
                             <textarea class="form-control" name="review" id="textAreaExample1" rows="4"></textarea>
-                            <label class="form-label" for="textAreaExample">Reviews</label>
-                            <button type="submit" class="btn btn-success">Submit</button>
+                            {{!-- <label  class="form-label" for="textAreaExample">Reviews</label> --}}
+                            <button style="background-color: white;color: black;" type="submit" class="btn btn-success">Submit</button>
                         </div>
                     </form>
                     {{!-- {{/if}} --}}
@@ -258,7 +226,7 @@
                         {{!-- </button> --}}
                     {{else}}
 
-                    <button type="button" class="btn btn-primary " data-toggle="modal" data-target="#exampleModal">
+                    <button style="background-color: rgb(255, 255, 255);color: black;" type="button" class=" btn btn-primary " data-toggle="modal" data-target="#exampleModal">
                         REVIEW
                     </button>
                     {{/if}}
@@ -340,18 +308,19 @@
                 </div>
             </div>
             <div class="row">
+            {{#each relatesProduct}}
                 <div class="col-lg-3 col-md-6 col-sm-6 col-sm-6">
                     <div class="product__item">
-                        <div class="product__item__pic set-bg" data-setbg="img/product/product-1.jpg">
+                        <div  class="product__item__pic set-bg" data-setbg=""><img style="height: 110%; width: 100%;" src="productimages/{{image.[0]}}" alt="">
                             <span class="label">New</span>
                             <ul class="product__hover">
-                                <li><a href="#"><img src="img/icon/heart.png" alt=""></a></li>
-                                <li><a href="#"><img src="img/icon/compare.png" alt=""> <span>Compare</span></a></li>
-                                <li><a href="#"><img src="img/icon/search.png" alt=""></a></li>
+                                <li><a href="/wishlistGet/{{_id}}"><img src="img/icon/heart.png" alt=""></a></li>
+                               
+                                <li><a href="/productAccsess/{{_id}}"><img src="img/icon/search.png" alt=""></a></li>
                             </ul>
                         </div>
                         <div class="product__item__text">
-                            <h6>Piqué Biker Jacket</h6>
+                            <h6>{{productName}}</h6>
                             <a href="#" class="add-cart">+ Add To Cart</a>
                             <div class="rating">
                                 <i class="fa fa-star-o"></i>
@@ -360,7 +329,7 @@
                                 <i class="fa fa-star-o"></i>
                                 <i class="fa fa-star-o"></i>
                             </div>
-                            <h5>$67.24</h5>
+                            <h5>₹{{price}}</h5>
                             <div class="product__color__select">
                                 <label for="pc-1">
                                     <input type="radio" id="pc-1">
@@ -375,109 +344,10 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6 col-sm-6 col-sm-6">
-                    <div class="product__item">
-                        <div class="product__item__pic set-bg" data-setbg="img/product/product-2.jpg">
-                            <ul class="product__hover">
-                                <li><a href="#"><img src="img/icon/heart.png" alt=""></a></li>
-                                <li><a href="#"><img src="img/icon/compare.png" alt=""> <span>Compare</span></a></li>
-                                <li><a href="#"><img src="img/icon/search.png" alt=""></a></li>
-                            </ul>
-                        </div>
-                        <div class="product__item__text">
-                            <h6>Piqué Biker Jacket</h6>
-                            <a href="#" class="add-cart">+ Add To Cart</a>
-                            <div class="rating">
-                                <i class="fa fa-star-o"></i>
-                                <i class="fa fa-star-o"></i>
-                                <i class="fa fa-star-o"></i>
-                                <i class="fa fa-star-o"></i>
-                                <i class="fa fa-star-o"></i>
-                            </div>
-                            <h5>$67.24</h5>
-                            <div class="product__color__select">
-                                <label for="pc-4">
-                                    <input type="radio" id="pc-4">
-                                </label>
-                                <label class="active black" for="pc-5">
-                                    <input type="radio" id="pc-5">
-                                </label>
-                                <label class="grey" for="pc-6">
-                                    <input type="radio" id="pc-6">
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 col-sm-6 col-sm-6">
-                    <div class="product__item sale">
-                        <div class="product__item__pic set-bg" data-setbg="img/product/product-3.jpg">
-                            <span class="label">Sale</span>
-                            <ul class="product__hover">
-                                <li><a href="#"><img src="img/icon/heart.png" alt=""></a></li>
-                                <li><a href="#"><img src="img/icon/compare.png" alt=""> <span>Compare</span></a></li>
-                                <li><a href="#"><img src="img/icon/search.png" alt=""></a></li>
-                            </ul>
-                        </div>
-                        <div class="product__item__text">
-                            <h6>Multi-pocket Chest Bag</h6>
-
-                            <div class="rating">
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star-o"></i>
-                            </div>
-                            <h5>$43.48</h5>
-                            <div class="product__color__select">
-                                <label for="pc-7">
-                                    <input type="radio" id="pc-7">
-                                </label>
-                                <label class="active black" for="pc-8">
-                                    <input type="radio" id="pc-8">
-                                </label>
-                                <label class="grey" for="pc-9">
-                                    <input type="radio" id="pc-9">
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 col-sm-6 col-sm-6">
-                    <div class="product__item">
-                        <div class="product__item__pic set-bg" data-setbg="img/product/product-4.jpg">
-                            <ul class="product__hover">
-                                <li><a href="#"><img src="img/icon/heart.png" alt=""></a></li>
-                                <li><a href="#"><img src="img/icon/compare.png" alt=""> <span>Compare</span></a></li>
-                                <li><a href="#"><img src="img/icon/search.png" alt=""></a></li>
-                            </ul>
-                        </div>
-                        <div class="product__item__text">
-                            <h6>Diagonal Textured Cap</h6>
-
-                            <div class="rating">
-                                <i class="fa fa-star-o"></i>
-                                <i class="fa fa-star-o"></i>
-                                <i class="fa fa-star-o"></i>
-                                <i class="fa fa-star-o"></i>
-                                <i class="fa fa-star-o"></i>
-                            </div>
-                            <h5>$60.9</h5>
-                            <div class="product__color__select">
-                                <label for="pc-10">
-                                    <input type="radio" id="pc-10">
-                                </label>
-                                <label class="active black" for="pc-11">
-                                    <input type="radio" id="pc-11">
-                                </label>
-                                <label class="grey" for="pc-12">
-                                    <input type="radio" id="pc-12">
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                {{/each}}
+                
+                
+               
             </div>
         </div>
     </section>
@@ -487,23 +357,14 @@
     <footer class="footer">
         <div class="container">
             <div class="row">
-                <div class="col-lg-3 col-md-6 col-sm-6">
-                    <div class="footer__about">
-                        <div class="footer__logo">
-                            <a href="#"><img src="img/footer-logo.png" alt=""></a>
-                        </div>
-                        <p>The customer is at the heart of our unique business model, which includes design.</p>
-                        <a href="#"><img src="img/payment.png" alt=""></a>
-                    </div>
-                </div>
+               
                 <div class="col-lg-2 offset-lg-1 col-md-3 col-sm-6">
                     <div class="footer__widget">
                         <h6>Shopping</h6>
                         <ul>
                             <li><a href="#">Clothing Store</a></li>
                             <li><a href="#">Trending Shoes</a></li>
-                            <li><a href="#">Accessories</a></li>
-                            <li><a href="#">Sale</a></li>
+                            
                         </ul>
                     </div>
                 </div>
@@ -513,8 +374,7 @@
                         <ul>
                             <li><a href="#">Contact Us</a></li>
                             <li><a href="#">Payment Methods</a></li>
-                            <li><a href="#">Delivary</a></li>
-                            <li><a href="#">Return & Exchanges</a></li>
+                           
                         </ul>
                     </div>
                 </div>
@@ -523,10 +383,7 @@
                         <h6>NewLetter</h6>
                         <div class="footer__newslatter">
                             <p>Be the first to know about new arrivals, look books, sales & promos!</p>
-                            <form action="#">
-                                <input type="text" placeholder="Your email">
-                                <button type="submit"><span class="icon_mail_alt"></span></button>
-                            </form>
+                            
                         </div>
                     </div>
                 </div>
@@ -539,8 +396,7 @@
                             <script>
                                 document.write(new Date().getFullYear());
                             </script>2020
-                            All rights reserved | This template is made with <i class="fa fa-heart-o"
-                                aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+                          
                         </p>
                         <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
                     </div>

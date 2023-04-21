@@ -356,8 +356,8 @@ const newcategoryaddpost = async function (req, res, next) {
           
             else{
                  categoryinfo.insertMany({ name: req.body.category, status: true })
-            res.redirect('/addcategory')
-            }
+                }
+                res.redirect('/addcategory')
     } catch (error) {
         console.log(error)
         next()
@@ -681,7 +681,6 @@ const deleteEditImg=async function(req,res,next){
         
         const editImgDelete=req.query.index
         const editImgDeleteId=req.query.productId
-        console.log(req.query);
         const image=req.files
     
        await productinfo.updateOne({productId:editImgDeleteId},{$pull:{image:image}})
@@ -701,8 +700,7 @@ const salesReport=async function(req,res,next){
     try {
         
         let salesDatas=await orderinfo.aggregate([{$match:{orderStatus:"Delivered"}},{$unwind:"$products"},{$project:{product:"$products.product",quantity:"$products.quantity",totalPrice:"$products.totalPrice",orderedUser:"$orderedUser",grandTotal:"$grandTotal",deliveryDate:"$deliveryDate",salesDate:"$salesDate",user:"$deliveryAddress.name"}}])
-    
-        console.log(salesDatas);
+
         if(req.session.report){
             salesDatas=req.session.report
             res.render('salesReport',{salesDatas})
@@ -715,7 +713,6 @@ const salesReport=async function(req,res,next){
     } catch (error) {
         console.log(error);
         next()
-        
     }
  
   }
@@ -723,8 +720,38 @@ const salesReport=async function(req,res,next){
     try {
         
         const salesParams=req.query.name
-    
-        if(salesParams=="day"){
+        const startDate=req.query.startDate
+        const endDate=req.query.endDate
+       
+if(startDate&&endDate){
+
+
+        const startDateObj=new Date(startDate).toLocaleDateString()
+        const endDateObj=new Date(endDate).toLocaleDateString()
+
+    //    endDateObj.setDate(endDateObj.getDate()+1)
+
+const wholeSalesReport= await orderinfo.aggregate([
+    {
+        $unwind: "$products"
+    },
+    {
+        $match: {
+            orderStatus: "Delivered",
+            salesDate: {
+                $gte: startDateObj,
+                $lte: endDateObj
+            }
+        }
+    },
+    {
+        $project: {product: "$products.product",quantity: "$products.quantity",totalPrice: "$products.totalPrice",orderedUser: "$orderedUser",grandTotal: "$grandTotal",deliveryDate: "$deliveryDate",salesDate: "$salesDate",user: "$deliveryAddress.name"}
+    }
+]);
+req.session.report=wholeSalesReport
+console.log(wholeSalesReport);
+
+} else if(salesParams=="day"){
             const today=new Date()
             const todayDate=today.toLocaleDateString()
     
@@ -732,8 +759,6 @@ const salesReport=async function(req,res,next){
             tomorrow.setDate(today.getDate()+1)
             const tomorrowDate=tomorrow.toLocaleDateString()
     
-            console.log(todayDate);
-            console.log(tomorrowDate);
     
     
             const dailySalesReport=await orderinfo.aggregate([{
@@ -749,7 +774,7 @@ const salesReport=async function(req,res,next){
             },
             {$project:{product:"$products.product",quantity:"$products.quantity",totalPrice:"$products.totalPrice",orderedUser:"$orderedUser",grandTotal:"$grandTotal",deliveryDate:"$deliveryDate",salesDate:"$salesDate",user:"$deliveryAddress.name"}}
         ])
-        console.log(dailySalesReport);
+       
     req.session.report=dailySalesReport
     
         }else if(salesParams=="month"){
@@ -762,8 +787,6 @@ const salesReport=async function(req,res,next){
             const lastDayOfMonth=new Date(currentYear,currentMonth+1,0).toLocaleDateString()
     
     
-            console.log(firstDayOfMonth);
-            console.log(lastDayOfMonth);
     
             const monthlySalesReport=await orderinfo.aggregate([{
                 $unwind:"$products"
@@ -777,7 +800,7 @@ const salesReport=async function(req,res,next){
             {$project:{product:"$products.product",quantity:"$products.quantity",totalPrice:"$products.totalPrice",orderedUser:"$orderedUser",grandTotal:"$grandTotal",deliveryDate:"$deliveryDate",salesDate:"$salesDate",user:"$deliveryAddress.name"}}
               
         ])
-        console.log(monthlySalesReport);
+       
         req.session.report=monthlySalesReport
         }else{
            const  yearlySalesReport=await orderinfo.aggregate([{

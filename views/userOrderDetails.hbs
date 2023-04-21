@@ -16,24 +16,23 @@
   </thead>
   <tbody>
 
-    {{#each userOrderDelivered}}
+  
    
+        {{#each productUserData}}
     
     <tr>
       <td>
-        {{#each productUserData}}
         <div class="d-flex align-items-center">
           <div class="ms-3">
             <p class="fw-bold mb-1"><img style="width: 5rem;" src="/productimages/{{product.image.[0]}}" alt=""></p>
             
           </div>
         </div>
-          {{/each}}
       </td>
      
       
      <td>
-{{#each ../productUserData}}
+
         <p class="text-muted mb-0">{{product.productName}}</p>
       </td>
       
@@ -44,8 +43,9 @@
         <p class="text-muted mb-0">{{product.productId}}</p>
       </td>
        <td>
-        {{/each}}
-  
+         
+      
+  {{#each ../userOrderDelivered}}
         <p class="text-muted mb-0">{{date}}</p>
       </td>
 
@@ -55,13 +55,14 @@
        <td>
         <p class="text-muted mb-0">{{deliveryDate}}</p>
       </td>
-     
+     {{/each}}
 
   
     
      
     </tr>
-  {{/each}}
+      {{/each}}
+  
   </tbody>
  
 </table> 

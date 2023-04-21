@@ -76,8 +76,6 @@ const userhome = async function (req, res, next) {
     let addBanner = await bannerinfo.find().skip(1).toArray()
     let defaultImage = await bannerinfo.find().limit(1).toArray()
 
-    console.log(addBanner);
-
     defaultImage = defaultImage[0]
     res.render('userhome', { newProduct, user, addBanner, defaultImage })
 
@@ -102,6 +100,7 @@ const usershop = async function (req, res, next) {
     let priceSortThree = req.session.priceSortThree
     let priceSortFour=req.session.priceSortFour
     let shopProducts=req.session.shopProducts
+    let pages=req.session.pages
     // let pageNum=req.session.pageNum
     // let perpage=req.session.perpage
 
@@ -156,11 +155,11 @@ const usershop = async function (req, res, next) {
 
       req.session.addnew = addnew
 
-      res.render('shop', { addnew, categoryFetch, lowToHighSort, highToLowSort,shopProducts })
+      res.render('shop', { addnew, categoryFetch, lowToHighSort, highToLowSort,shopProducts,pages })
     } else {
 
       const addnew = await productinfo.find({ category: selectone })
-      res.render('shop', { addnew, categoryFetch, lowToHighSort, highToLowSort })
+      res.render('shop', { addnew, categoryFetch, lowToHighSort, highToLowSort,pages })
     }
   } catch (error) {
     console.log(error)
@@ -198,7 +197,6 @@ const userwishlist =async function (req, res, next) {
       $project:{productId:"$wishlistProduct.productId",wishlistProductView:{$arrayElemAt:["$wishlistProducts",0]}}
     },
   ]).toArray()
-  console.log(wishlistDisplay);
 
     res.render('wishlist',{wishlistDisplay})
 
@@ -269,7 +267,6 @@ const usercart = async function (req, res, next) {
 
         req.session.couponTotal = couponTotal
 
-        console.log(grand_Total);
       }
     }
 
@@ -304,6 +301,7 @@ const usercheckout = async function (req, res, next) {
     let productCart = req.session.productCart
     let couponTotal = req.session.couponTotal
     let addressPage = req.session.passAdd
+    let addressIndex=req.query.index
     const user1 = req.session.user
     user = req.session.user.name
     let wall=await userinfo.findOne({name:user})
@@ -317,30 +315,29 @@ const usercheckout = async function (req, res, next) {
 
 
     if (user) {
-      let userCheck = await addressinfo.findOne({ user: req.session.user.name })
+      let userCheck = await addressinfo.aggregate([{$match:{user: user }},{$unwind:"$address"}])
+      
 
       if (userCheck == null) {
         res.redirect('/profile')
       } else {
         if (addressPage) {
-          addressDetail = addressPage
+          addressDetail = addressPage[0]
           addressPage = null
-
-        } else {
-          addressDetail = userCheck.address[0]
+          
+        } 
+        else  {
+          addressDetail = userCheck[0]
 
         }
         let walletPrice=await userinfo.findOne({name:user})
 
-        console.log(walletPrice);
         let price=walletPrice.wallet
 
         let finalAmout=grand_Total
-        console.log(finalAmout);
 
         if(price>finalAmout){
           price-=finalAmout
-          console.log(price);
           req.session.walletPrice=price
           
           finalAmout=price
@@ -355,8 +352,10 @@ const usercheckout = async function (req, res, next) {
           for (var i = 0; i < productCart.length; i++) {
             totalPrice = productCart[i].quantity * productCart[i].product.price
             productCart[i].totalPrice = totalPrice
-            grand_Total += totalPrice - couponTotal
+            grand_Total += totalPrice
           }
+          grand_Total -=couponTotal
+
         } else {
 
           grand_Total = 0
@@ -598,14 +597,14 @@ const productDetaile = async function (req, res, next) {
     const reviewProuctFindId=productview[0]._id 
     // const exstReview=req.session.exstReview
     user=req.session.user
-    console.log(reviewProuctFindId);
+   
    
      const reviewProduct=await reviewinfo.find({productId:reviewProuctFindId})
+     const relatesProduct=await productinfo.find({}).skip(2).limit(4)
 
-     console.log(reviewProduct);
-     res.render('productDetailes', { productview,user,reviewProduct ,reviewProuctFindId,})
+     res.render('productDetailes', { productview,user,reviewProduct ,reviewProuctFindId,relatesProduct})
   } catch (error) {
-    console.log(error)
+   
     next()
   }
 
@@ -623,7 +622,7 @@ const productAccsessget = async function (req, res, next) {
     res.redirect('/productDetails')
 
   } catch (error) {
-    console.log(error)
+  
     next()
 
   }
@@ -644,7 +643,7 @@ const cartManage = async function (req, res, next) {
       const userCart = await cartInfo.findOne({ user: userId })
       if (userCart) {
         let proExist = await cartInfo.findOne({ $and: [{ user: userId }, { "product.item": proId }] })
-        console.log(proExist);
+       
         if (proExist != null && proExist != "") {
           await cartInfo.updateOne({ "product.item": proId }, { $inc: { 'product.$.quantity': 1 } })
 
@@ -723,8 +722,6 @@ const changeQuantity = async function (req, res, next) {
     let stock = productData.stock
     let stockmsg
     let stockmessage
-    console.log(stock);
-    console.log(qaunt);
     if (qaunt <= stock) {
 
       carterror = null
@@ -788,7 +785,6 @@ const userAddress = async function (req, res, next) {
     user = req.session.user.name
     let details = req.body
     details.id = uuid()
-    console.log(details);
 
 
     let userExt = await addressinfo.findOne({ user: user })
@@ -818,8 +814,9 @@ const savedAddress = async function (req, res, next) {
     req.session.passId2 = passId2
 
 
-
+    
     let passAdd = await addressinfo.aggregate([{ $match: { user: user } }, { $unwind: "$address" }, { $match: { "address.id": passId2 } }])
+  
     req.session.passAdd = passAdd
 
     res.redirect('/checkout')
@@ -833,6 +830,12 @@ const placeorder = async function (req, res, next) {
   try {
     user=req.session.user
     let productCart = req.session.productCart
+    let orders=req.session.orders
+
+
+
+    await orderinfo.insertMany([orders])
+    await cartInfo.deleteOne({ user: req.session.user.name })
 
    
 
@@ -858,7 +861,6 @@ const proceed = async function (req, res, next) {
     user = req.session.user.name
 
     let status = req.body.paymentmethod === "COD" ? "orderConfirmed" : "orderConfirmed"
-    console.log(req.body);
 
     let delivery = {
 
@@ -875,7 +877,7 @@ const proceed = async function (req, res, next) {
 
     payment = req.body.paymentmethod,
       grand_Total = paymentTotal
-    console.log(grand_Total);
+   
     user = req.session.user
     products = productCart
     usedCoupon= userCoupon
@@ -886,7 +888,7 @@ const proceed = async function (req, res, next) {
     let orderId = uuid()
 
     if (payment === "onlinepayment") {
-      console.log(payment);
+      
 
 
       orders = {
@@ -907,12 +909,13 @@ const proceed = async function (req, res, next) {
         receipt: "" + orderId
       }
 
-      instance.orders.create(options, function (err, order) {
-        console.log(order);
+      instance.orders.create(options,async  function (err, order) {
+        
         if (err) {
           console.log(err);
         } else {
-          orderinfo.insertMany([orders])
+          req.session.orders=orders
+          // await orderinfo.insertMany([orders])
           res.json({ status: true, order: order })
         }
       })
@@ -926,9 +929,9 @@ const proceed = async function (req, res, next) {
      res.json({status:false})
     }
     let price=req.session.walletPrice
-    console.log(price);
+   
     await userinfo.updateOne({name:req.session.user.name},{$set:{wallet:price}})
-    await cartInfo.deleteOne({ user: req.session.user.name })
+   
   } catch (error) {
     console.log(error)
     next()
@@ -986,8 +989,6 @@ const extAddressEdit = async function (req, res, next) {
 
 
     const adressEditExt = await addressinfo.aggregate([{$match:{user:user}},{$unwind:"$address"},{$match:{"address.id":addressEdit}}])
-    
-console.log(adressEditExt);
     res.render('editAddress', { adressEditExt })
 
   } catch (error) {
@@ -1001,7 +1002,7 @@ const existAddress = async function (req, res, next) {
     const addressEditId=req.params.id
 
     const addressEdit = await addressinfo.findOne({user:user})
-    console.log(addressEdit)
+  
     req.session.user.addressEditId = addressEditId
     res.redirect('/addressEdit')
 
@@ -1029,7 +1030,7 @@ const addressUpdate = async function (req, res, next) {
     user = req.session.user.name
     const editUserAddress = req.session.user.addressEditId
 
-    console.log(editUserAddress);
+   
 
     await addressinfo.updateOne({ user: user, address: { $elemMatch: { id: editUserAddress } } },
       {
@@ -1074,9 +1075,9 @@ const applyCoupon = async function (req, res, next) {
   
     req.body.couponcode=couponId
     user = req.session.user.name
-    console.log(couponId);
+    
     let usedCouponCheck = await userinfo.find({ name: user, usedCoupon: { $in: [couponId] } })
-    console.log(usedCouponCheck);
+    
  
     if (usedCouponCheck=="") {
   
@@ -1088,11 +1089,11 @@ const applyCoupon = async function (req, res, next) {
       if (couponCheck) {
         const date = new Date().toISOString().slice(0,10)
         
-        console.log(date);
+        
   
         if (date < couponCheck.expireDate) {
           req.session.coupon = couponId
-          console.log(couponCheck.expireDate);
+         
           // await userinfo.updateOne({name:user},{$set:{userUsedCoupon:couponId}})
         } else  {
         let   couponError = "Coupon is alredy expierd"
@@ -1126,6 +1127,7 @@ const paymentVerification = async function (req, res, next) {
 
     user = req.session.user
     let userCoupon=req.session.couponcode
+    // let orders=req.session.orders
   
     if (user) {
       raz = req.body
@@ -1147,7 +1149,7 @@ const paymentVerification = async function (req, res, next) {
           order.products[0].product[i].paymentId = req.body['payment[razorpay_payment_id]']
   
         }
-        await orderinfo.insertMany([order])
+        // await orderinfo.insertMany([orders])
         await orderinfo.update({user:req.session.user},{$set:{userUsedCoupon:userCoupon}})
         await cartInfo.deleteOne({ user: req.session.user.name })
         req.session.user.order = null
@@ -1155,7 +1157,7 @@ const paymentVerification = async function (req, res, next) {
       } else {
   
       }
-      console.log(req.body);
+      
       res.redirect('/')
     }
   } catch (error) {
@@ -1189,16 +1191,17 @@ const userProductOrder = async function (req, res, next) {
 try {
   
   const orderedId = req.query._id
-    console.log(orderedId);
+   
    const orderId=req.query.orderedUser
-   console.log(orderId);
+   
    user=req.session.user.name
   
-    let userOrderDelivered=await orderinfo.find({})
+    let userOrderDelivered=await orderinfo.find({orderedUser:orderId,_id:new ObjectId(orderedId)})
   
     let userOrderDeliveredId=userOrderDelivered.orderStatus
    const productUserData = await orderinfo.aggregate([{$unwind:"$products"},{$match:{orderedUser:orderId}},{$project:{product:"$products.product"}},{$match:{_id:new ObjectId(orderedId)}}])
-   console.log(productUserData);
+    
+  
     res.render("userOrderDetails", { productUserData,userOrderDeliveredId,userOrderDelivered })
   
 } catch (error) {
@@ -1210,7 +1213,7 @@ const lowToHighSort = async function (req, res, next) {
   try {
     const lowToHighSort = await productinfo.find().sort({ price: 1 })
     req.session.lowToHighSort = lowToHighSort
-    console.log(lowToHighSort);
+   
   
     res.redirect('/shop')
     
@@ -1306,12 +1309,12 @@ const changePage=async function(req,res,next){
   
     const shopProducts=await productinfo.find().skip((pageNum-1)*perpage).limit(perpage)
     
-  
-    // const pages=Math.ceil(shopProducts/perpage)
+   const shopProductCount=await productinfo.find({}).count()
+    const pages=Math.ceil(shopProductCount/perpage)
   
     req.session.shopProducts=shopProducts
     // req.session.pageNum=pageNum
-    // req.session.perpage=perpage
+    req.session.pages=pages
     // req
     res.redirect('/shop')
   } catch (error) {
@@ -1330,14 +1333,10 @@ const returnUser=async function(req,res,next){
 
     const returnDate=new Date().toLocaleDateString()
 
-
-
-
     await orderinfo.updateOne({_id:new ObjectId(userReturnId)},{$set:{orderStatus:"returnRequsted"}})
     await orderinfo.updateOne({_id:new ObjectId(userReturnId)},{$set:{returnDate:returnDate}})
     const addReturnField=  await orderinfo.updateOne({_id:new ObjectId(userReturnId)},{$set:{newReturnStats:"returnRequsted"}})
 
-    
     await userinfo.updateOne({name:user},{$inc:{wallet:walletAmount}})
     
   
@@ -1352,11 +1351,12 @@ const returnUser=async function(req,res,next){
 }
 
 const cancelOrder=async function(req,res,next){
- 
+ user=req.session.user.name
   const cancelOrederId=req.params.id
-
+  const walletAmout=req.params.grandTotal
   await orderinfo.updateOne({_id:new ObjectId(cancelOrederId)},{$set:{orderStatus:"OrderCanceled"}})
   await orderinfo.updateOne({_id:new ObjectId(cancelOrederId)},{$set:{cancelStatus:"OrderCanceled"}})
+  await userinfo.updateOne({name:user},{$inc:{wallet:walletAmout}})
 
   res.redirect('/userOederDetaile')
 }
@@ -1388,8 +1388,7 @@ const wishlistGet=async function(req,res,next){
         // let wishlistCheck=await  wishlistinfo.find({user:user},{wishlistProduct: {$elemMatch: {productId: wishlistProductId}}}).toArray()
 
         let wishlistCheck=await wishlistinfo.find({$and:[{user:user},{"wishlistProduct.productId":wishlistProductId}]}).toArray()
-        console.log(wishlistCheck);
-        console.log("ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp");
+      
   
         if(wishlistCheck.length==0){
           await wishlistinfo.updateOne({user:user},{$push:{wishlistProduct:{productId:wishlistProductId}}})
@@ -1411,7 +1410,7 @@ const wishProductDel=async function(req,res,next){
     user=req.session.user.name
       const wishDelId=req.params.id
     
-      console.log(wishDelId);
+      
      
       await wishlistinfo.updateOne({user:user},{$pull:{wishlistProduct:{productId:wishDelId}}})
     
@@ -1441,7 +1440,7 @@ const userReview=async function(req,res,next){
     user=req.session.user.name
     const search=req.session.search
   
-    console.log(search);
+  
   
    const  userReview=await reviewinfo.insertMany([{review:submitReview,user:user,productId:search}])
     

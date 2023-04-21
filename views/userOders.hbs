@@ -28,9 +28,9 @@
         <p class="text-muted mb-0">{{date}}</p>
       </td>
        <td>
-        {{#each products}}
-        <p class="text-muted mb-0">{{totalPrice}}</p>
-        {{/each}}
+        {{!-- {{#each products}} --}}
+        <p class="text-muted mb-0">{{grandTotal}}</p>
+        {{!-- {{/each}} --}}
       </td>
   
       <td>
@@ -69,7 +69,7 @@
 
       <a href="/userReturn/{{_id}}/{{grandTotal}}"><button class="btn btn-primary">Return</button></a></td></td>
       {{else}}
-      <a href="/orderCancel/{{_id}}"><button class="btn btn-primary">cancel</button></a>
+      <a href="/orderCancel/{{_id}}/{{grandTotal}}"><button class="btn btn-primary">cancel</button></a>
       <p>OrderConfirmed</p>
       {{/if}}
        {{/if}}

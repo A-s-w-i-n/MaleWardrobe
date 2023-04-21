@@ -50,17 +50,13 @@
             </div>
             <div class="offcanvas__top__hover">
                 <span>Usd <i class="arrow_carrot-down"></i></span>
-                <ul>
-                    <li>USD</li>
-                    <li>EUR</li>
-                    <li>USD</li>
-                </ul>
+               
             </div>
         </div>
         <div class="offcanvas__nav__option">
-            <a href="#" class=""><img src="img/icon/search.png" alt=""></a>
-            <a href="#"><img src="img/icon/heart.png" alt=""></a>
-            <a href="#"><img src="img/icon/cart.png" alt=""> <span>0</span></a>
+            <a href="/profile"><div class="price"> <i class="fa-regular fa-user"></i></div></a>
+            <a href="/wishlist"><img src="img/icon/heart.png" alt=""></a>
+            <a href="/cart"><img src="img/icon/cart.png" alt=""> <span>0</span></a>
             <div class="price">$0.00</div>
         </div>
         <div id="mobile-menu-wrap"></div>
@@ -106,7 +102,7 @@
                     <nav class="header__menu mobile-menu">
                         <ul>
                             <li><a href="http://localhost:3000">Home</a></li>
-                            <li class="active"><a href="http://localhost:3000/shop">Shop</a></li>
+                            <li class="active"><a href="/shop">Shop</a></li>
                         </ul>
                     </nav>
                 </div>
@@ -211,12 +207,7 @@
             <div class="row">
                 <div class="col-lg-3">
                     <div class="shop__sidebar">
-                        <div class="shop__sidebar__search">
-                            <form action="#">
-                                <input type="text" placeholder="Search...">
-                               
-                            </form>
-                        </div>
+                        
                         <div class="shop__sidebar__accordion">
                             <div class="accordion" id="accordionExample">
                                 <div class="card">
@@ -237,21 +228,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card">
-                                    <div class="card-heading">
-                                        <a data-toggle="collapse" data-target="#collapseTwo">Branding</a>
-                                    </div>
-                                    <div id="collapseTwo" class="collapse show" data-parent="#accordionExample">
-                                        <div class="card-body">
-                                            <div class="shop__sidebar__brand">
-                                                <ul>
-                                                    <li><a href="#">{{brand}}</a></li>
-
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                              
                                 
                                 
                                 
@@ -298,7 +275,7 @@
                              <div  class="product__item__pic set-bg" ><img style="height: 100%; width: 100%;" src="productimages/{{image.[0]}}" >   
                                     <ul class="product__hover">
                                         <li><a href="/wishlistGet/{{_id}}"><img src="img/icon/heart.png" alt=""></a></li>
-                                        <li><a href="#"><img src="img/icon/compare.png" alt=""> <span>Compare</span></a>
+                                       
                                         </li>
                                         
                                         <li><a href="/productAccsess/{{_id}}"><img src="img/icon/search.png" alt=""></a></li>
@@ -315,7 +292,7 @@
                                         <i class="fa fa-star-o"></i>
                                         <i class="fa fa-star-o"></i> --}}
                                     </div>
-                                    <h5>₹{{price}}</h5>
+                                   <h5>₹{{price}}</h5>
                                     <div class="product__color__select">
                                         <label for="pc-4">
                                             <input type="radio" id="pc-4">

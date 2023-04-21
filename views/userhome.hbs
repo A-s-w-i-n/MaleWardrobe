@@ -86,7 +86,7 @@
         </div>
         <div class="container">
             <div class="row">
-                <div class="col-lg-3 col-md-3">
+                <div class="col-lg-3 col-md-3 col-sm-6">
                     <div class="header__logo">
                         <a href=""><img style="position: relative;right: 5rem ;" src="Screenshot (82).png" alt=""></a>
                     </div>
@@ -95,23 +95,23 @@
                     <nav class="header__menu mobile-menu">
                         <ul>
                             <li class="active"><a href="./index.html">Home</a></li>
-                            <li><a href="http://localhost:3000/shop">Shop</a></li>
+                            <li><a href="/shop">Shop</a></li>
                            
                         </ul>
                     </nav>
                 </div>
                 <div class="col-lg-3 col-md-3">
                     <div class="header__nav__option">
-                        <a href="#" class="search-switch"><img src="img/icon/search.png" alt=""></a>
-                        <a href="http://localhost:3000/wishlist"><img src="img/icon/heart.png" alt=""></a>
+                        
+                        <a href="/wishlist"><img src="img/icon/heart.png" alt=""></a>
 
 
-                        <a href="http://localhost:3000/cart"><img src="img/icon/cart.png" alt=""> <span>0</span></a>
+                        <a href="/cart"><img src="img/icon/cart.png" alt=""> <span>0</span></a>
                        
 
 
-                         <a href="http://localhost:3000/checkout"><div class="price"></i></div></a>
-                        <a href="http://localhost:3000/profile"><div class="price"> <i class="fa-regular fa-user"></i></div></a>
+                         <a href="/checkout"><div class="price"></i></div></a>
+                        <a href="/profile"><div class="price"> <i class="fa-regular fa-user"></i></div></a>
                     </div>
                 </div>
             </div>
@@ -276,7 +276,7 @@
                         </div>
                         <div class="banner__item__text">
                             <h2>Shoes Spring 2030</h2>
-                            <a href="#">Shop now</a>
+                            <a href="/shop">Shop now</a>
                         </div>
                     </div>
                 </div>
@@ -291,8 +291,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <ul class="filter__controls">
-                        <li class="active" data-filter="*">Best Sellers</li>
-                        <li data-filter=".new-arrivals">New Arrivals</li>
+                        <li class="active" data-filter="*">New Arrivals</li>
                         <li data-filter=".hot-sales">Hot Sales</li>
                     </ul>
                 </div>
@@ -304,8 +303,8 @@
                         <div class="product__item__pic set-bg"><img style="height: 17.8rem; width: 15rem;" src="productimages/{{image.[0]}}" alt="">
                             <span class="label">New</span>
                             <ul class="product__hover">
-                                <li><a href="#"><img src="img/icon/heart.png" alt=""></a></li>
-                                <li><a href="#"><img src="img/icon/compare.png" alt=""> <span>Compare</span></a></li>
+                                <li><a href="/wishlistGet/{{_id}}"><img src="img/icon/heart.png" alt=""></a></li>
+                               
                                 <li><a href="/productAccsess/{{id}}"><img src="img/icon/search.png" alt=""></a></li>
                             </ul>
                         </div>
@@ -342,51 +341,7 @@
     <!-- Product Section End -->
 
     <!-- Categories Section Begin -->
-    <section class="categories spad">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-3">
-                    <div class="categories__text">
-                        <h2>Clothings Hot <br /> <span>Shoe Collection</span> <br /> Accessories</h2>
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="categories__hot__deal">
-                        <img src="img/product-sale.png" alt="">
-                        <div class="hot__deal__sticker">
-                            <span>Sale Of</span>
-                            <h5>$29.99</h5>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 offset-lg-1">
-                    <div class="categories__deal__countdown">
-                        <span>Deal Of The Week</span>
-                        <h2>Multi-pocket Chest Bag Black</h2>
-                        <div class="categories__deal__countdown__timer" id="countdown">
-                            <div class="cd-item">
-                                <span>3</span>
-                                <p>Days</p>
-                            </div>
-                            <div class="cd-item">
-                                <span>1</span>
-                                <p>Hours</p>
-                            </div>
-                            <div class="cd-item">
-                                <span>50</span>
-                                <p>Minutes</p>
-                            </div>
-                            <div class="cd-item">
-                                <span>18</span>
-                                <p>Seconds</p>
-                            </div>
-                        </div>
-                        <a href="#" class="primary-btn">Shop now</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    
     <!-- Categories Section End -->
 
     <!-- Instagram Section Begin -->
@@ -408,7 +363,7 @@
                         <h2>Instagram</h2>
                         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
                         labore et dolore magna aliqua.</p>
-                        <h3>#Male_Fashion</h3>
+                        <h3>#Male_Warderobe</h3>
                     </div>
                 </div>
             </div>
@@ -417,73 +372,21 @@
     <!-- Instagram Section End -->
 
     <!-- Latest Blog Section Begin -->
-    <section class="latest spad">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="section-title">
-                        <span>Latest News</span>
-                        <h2>Fashion New Trends</h2>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-4 col-md-6 col-sm-6">
-                    <div class="blog__item">
-                        <div class="blog__item__pic set-bg" data-setbg="img/blog/blog-1.jpg"></div>
-                        <div class="blog__item__text">
-                            <span><img src="img/icon/calendar.png" alt=""> 16 February 2020</span>
-                            <h5>What Curling Irons Are The Best Ones</h5>
-                            <a href="#">Read More</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 col-sm-6">
-                    <div class="blog__item">
-                        <div class="blog__item__pic set-bg" data-setbg="img/blog/blog-2.jpg"></div>
-                        <div class="blog__item__text">
-                            <span><img src="img/icon/calendar.png" alt=""> 21 February 2020</span>
-                            <h5>Eternity Bands Do Last Forever</h5>
-                            <a href="#">Read More</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 col-sm-6">
-                    <div class="blog__item">
-                        <div class="blog__item__pic set-bg" data-setbg="img/blog/blog-3.jpg"></div>
-                        <div class="blog__item__text">
-                            <span><img src="img/icon/calendar.png" alt=""> 28 February 2020</span>
-                            <h5>The Health Benefits Of Sunglasses</h5>
-                            <a href="#">Read More</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    
     <!-- Latest Blog Section End -->
 
     <!-- Footer Section Begin -->
     <footer class="footer">
         <div class="container">
             <div class="row">
-                <div class="col-lg-3 col-md-6 col-sm-6">
-                    <div class="footer__about">
-                        <div class="footer__logo">
-                            <a href="#"><img src="img/footer-logo.png" alt=""></a>
-                        </div>
-                        <p>The customer is at the heart of our unique business model, which includes design.</p>
-                        <a href="#"><img src="img/payment.png" alt=""></a>
-                    </div>
-                </div>
+                
                 <div class="col-lg-2 offset-lg-1 col-md-3 col-sm-6">
                     <div class="footer__widget">
                         <h6>Shopping</h6>
                         <ul>
                             <li><a href="#">Clothing Store</a></li>
                             <li><a href="#">Trending Shoes</a></li>
-                            <li><a href="#">Accessories</a></li>
-                            <li><a href="#">Sale</a></li>
+                         
                         </ul>
                     </div>
                 </div>
@@ -493,8 +396,7 @@
                         <ul>
                             <li><a href="#">Contact Us</a></li>
                             <li><a href="#">Payment Methods</a></li>
-                            <li><a href="#">Delivary</a></li>
-                            <li><a href="#">Return & Exchanges</a></li>
+                           
                         </ul>
                     </div>
                 </div>
@@ -503,10 +405,7 @@
                         <h6>NewLetter</h6>
                         <div class="footer__newslatter">
                             <p>Be the first to know about new arrivals, look books, sales & promos!</p>
-                            <form action="#">
-                                <input type="text" placeholder="Your email">
-                                <button type="submit"><span class="icon_mail_alt"></span></button>
-                            </form>
+                            
                         </div>
                     </div>
                 </div>
@@ -519,10 +418,7 @@
                             <script>
                                 document.write(new Date().getFullYear());
                             </script>2020
-                            All rights reserved | This template is made with <i class="fa fa-heart-o"
-                            aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
-                        </p>
-                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                            
                     </div>
                 </div>
             </div>
