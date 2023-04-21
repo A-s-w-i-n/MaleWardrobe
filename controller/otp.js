@@ -5,6 +5,7 @@ const authToken =  process.env.AUTH_TOKEN
 const client = require('twilio')(accountSid, authToken);
 const userinfo=require('../model/usermodel')
 const nodemailer=require('nodemailer')
+require('dotenv').config()
 
 
 function otpvalidation(email,otpvalue){
@@ -12,8 +13,8 @@ function otpvalidation(email,otpvalue){
   let mailTransporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: "malewarderobe@gmail.com",
-      pass: "gneeilmsjnhvlrxx"
+      user: process.env.AUTH_USER,
+      pass: process.env.AUTH_PASS
     }
   })
   let docs = {
