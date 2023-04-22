@@ -924,9 +924,11 @@ const proceed = async function (req, res, next) {
       await orderinfo.updateOne({$set:{userUsedCoupon:userCoupon}})
 
       res.json({ status: false })
-    }else{
+    }else if (payment=="wallet"){
       await orderinfo.insertMany([{ deliveryAddress: delivery, paymentMethod: payment, grandTotal: paymentTotal, orderedUser: user, products: products, date: orderdate, orderStatus: status, deliveryDate: deliveryDate , userUsedCoupon: userCoupon}])
      res.json({status:false})
+    }else{
+      
     }
     let price=req.session.walletPrice
    
@@ -969,7 +971,7 @@ const updateProfile = async function (req, res, next) {
     user = req.session.user.name
     await userinfo.updateOne({ name: user }, {
       $set: {
-        name: req.body.name,
+        // name: req.body.name,
         email: req.body.email,
         phone: req.body.phone
   
@@ -1352,11 +1354,23 @@ const returnUser=async function(req,res,next){
 
 const cancelOrder=async function(req,res,next){
  user=req.session.user.name
-  const cancelOrederId=req.params.id
-  const walletAmout=req.params.grandTotal
+ const cancelOrederId=req.params.id
+ const walletAmout=req.params.grandTotal
+ const paymentMethod=await orderinfo.find()
+ const payment=paymentMethod.paymentMethod
+ console.log(paymentMethod);
+ console.log(payment);
+
+ if(payment=="COD"){
   await orderinfo.updateOne({_id:new ObjectId(cancelOrederId)},{$set:{orderStatus:"OrderCanceled"}})
-  await orderinfo.updateOne({_id:new ObjectId(cancelOrederId)},{$set:{cancelStatus:"OrderCanceled"}})
-  await userinfo.updateOne({name:user},{$inc:{wallet:walletAmout}})
+   await orderinfo.updateOne({_id:new ObjectId(cancelOrederId)},{$set:{cancelStatus:"OrderCanceled"}})
+
+ }else{
+
+   await orderinfo.updateOne({_id:new ObjectId(cancelOrederId)},{$set:{orderStatus:"OrderCanceled"}})
+   await orderinfo.updateOne({_id:new ObjectId(cancelOrederId)},{$set:{cancelStatus:"OrderCanceled"}})
+   await userinfo.updateOne({name:user},{$inc:{wallet:walletAmout}})
+ }
 
   res.redirect('/userOederDetaile')
 }
