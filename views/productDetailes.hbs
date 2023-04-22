@@ -133,7 +133,7 @@
                 <div class="row">
                     {{#each productview}}
 
-                    <div class="col-lg-3 col-md-3">
+                    <div  class="col-lg-3 col-md-3  ">
                         {{#each image}}
                         <ul class="nav nav-tabs" role="tablist">
                             <li class="nav-item">
@@ -158,7 +158,7 @@
                         <div class="tab-content">
                             <div class="tab-pane active" id="tabs-1" role="tabpanel">
                                 <div class="zoom product__details__pic__item">
-                                    <img style="position: relative;right: 10%;" src="productimages/{{image.[0]}}" id="imageview" alt="">
+                                    <img style="position: relative;left: 11%;" src="productimages/{{image.[0]}}" id="imageview" alt="">
                                 </div>
                             </div>
                         </div>
@@ -171,16 +171,9 @@
                     <div class="row d-flex justify-content-center">
                         <form action="/addToCart/{{productId}}" method="post">
                             <div class="col-lg-8 col-md-6 col-sm-12">
-                                <div style="position: relative;left: 35%; width: 70%;" class="product__details__text">
+                                <div  style="position: relative;left: 24%; width: 70%;" class="product__details__text ">
                                     <h4>{{productName}}</h4>
-                                    <div class="rating">
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star-o"></i>
-                                        <span> - 5 Reviews</span>
-                                    </div>
+                                   
                                     <h3>₹{{price}} </h3>
                                     <p>{{discription}}</p>
                                     {{/each}}

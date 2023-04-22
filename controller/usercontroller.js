@@ -924,15 +924,15 @@ const proceed = async function (req, res, next) {
       await orderinfo.updateOne({$set:{userUsedCoupon:userCoupon}})
 
       res.json({ status: false })
-    }else if (payment=="wallet"){
+    }else if (payment==="wallet"){
       await orderinfo.insertMany([{ deliveryAddress: delivery, paymentMethod: payment, grandTotal: paymentTotal, orderedUser: user, products: products, date: orderdate, orderStatus: status, deliveryDate: deliveryDate , userUsedCoupon: userCoupon}])
+      await userinfo.updateOne({name:req.session.user.name},{$set:{wallet:price}})
      res.json({status:false})
     }else{
       
     }
     let price=req.session.walletPrice
    
-    await userinfo.updateOne({name:req.session.user.name},{$set:{wallet:price}})
    
   } catch (error) {
     console.log(error)
