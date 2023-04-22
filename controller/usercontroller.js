@@ -279,8 +279,8 @@ const usercart = async function (req, res, next) {
 
 
     res.render('cart', { productCart, grand_Total, couponerror, couponerr, couponerror1, stockmsg })
-    couponerror=null
-    couponerror1=null
+    req.session.couponError=null
+    req.session.couponerror1=null
     stockmsg = null
     req.session.couponError=null
 
@@ -929,7 +929,7 @@ const proceed = async function (req, res, next) {
       await userinfo.updateOne({name:req.session.user.name},{$set:{wallet:price}})
      res.json({status:false})
     }else{
-      
+
     }
     let price=req.session.walletPrice
    
@@ -1356,20 +1356,20 @@ const cancelOrder=async function(req,res,next){
  user=req.session.user.name
  const cancelOrederId=req.params.id
  const walletAmout=req.params.grandTotal
- const paymentMethod=await orderinfo.find()
+ const paymentMethod=await orderinfo.findOne({_id:cancelOrederId})
  const payment=paymentMethod.paymentMethod
- console.log(paymentMethod);
+ 
  console.log(payment);
 
- if(payment=="COD"){
+ if(payment=="onlinepayment"||payment=="wallet"){
   await orderinfo.updateOne({_id:new ObjectId(cancelOrederId)},{$set:{orderStatus:"OrderCanceled"}})
    await orderinfo.updateOne({_id:new ObjectId(cancelOrederId)},{$set:{cancelStatus:"OrderCanceled"}})
+   await userinfo.updateOne({name:user},{$inc:{wallet:walletAmout}})
 
  }else{
 
    await orderinfo.updateOne({_id:new ObjectId(cancelOrederId)},{$set:{orderStatus:"OrderCanceled"}})
    await orderinfo.updateOne({_id:new ObjectId(cancelOrederId)},{$set:{cancelStatus:"OrderCanceled"}})
-   await userinfo.updateOne({name:user},{$inc:{wallet:walletAmout}})
  }
 
   res.redirect('/userOederDetaile')
