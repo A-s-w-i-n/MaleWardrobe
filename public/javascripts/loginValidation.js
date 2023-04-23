@@ -31,6 +31,7 @@ function loginval(){
     }
     if(passwordRegex.test(password)==false){
         pass[1].innerHTML="Enter propper password"
+        return false
     }
     return true
 }

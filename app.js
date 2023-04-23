@@ -8,6 +8,7 @@ const multer=require('multer')
 
 var indexRouter = require('./routes/admin');
 var usersRouter = require('./routes/users');
+const { error } = require('console');
 
 var app = express();
 
@@ -40,6 +41,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   if(err.status==404){
+    console.log(error);
  res.render('error');
   }else if(err.status==500){
     res.render('errorSecond')

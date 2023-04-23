@@ -511,6 +511,7 @@ const userloginval = async function (req, res, next) {
       }
     }
   } catch (error) {
+    
     next()
     
   }
@@ -1474,7 +1475,7 @@ const userWalletHistory=async function(req,res,next){
     
     user=req.session.user
    
-   const walletDatas= await orderinfo.find({orderedUser:user,orderStatus:"returnRequsted"})
+   const walletDatas= await orderinfo.find({orderedUser:user,orderStatus:"return confirmed"})
   
   
   
