@@ -39,7 +39,7 @@
                 <a href="#">FAQs</a>
             </div>
             <div class="offcanvas__top__hover">
-                <span>Usd <i class="arrow_carrot-down"></i></span>
+                
                 
             </div>
         </div>
@@ -47,6 +47,11 @@
            <a href="/profile"><div class="price"> <i class="fa-regular fa-user"></i></div></a>
             <a href="/wishlist"><img src="img/icon/heart.png" alt=""></a>
             <a href="/cart"><img src="img/icon/cart.png" alt=""> <span>0</span></a>
+            {{#if user}}
+            <a class="text-dark" href="/logout">Logout</a>
+            {{else}}
+            <a class="text-dark" href="/login">Login</a>
+            {{/if}}
            
         </div>
         <div id="mobile-menu-wrap"></div>
@@ -180,16 +185,16 @@
         }
         .bannerTextDiv{
             position: absolute;
-            top: 14rem;
+            top: 33rem;
             
         }
         .bannerTextDiv1{
             position: absolute;
-            top: 14rem;
+            top: 33rem;
         }
         .primary-btn{
             position: absolute;
-            bottom: 32rem;
+            bottom: 36rem;
             width: 12rem;
             left: 13%;
         }
@@ -206,12 +211,7 @@
                                 <h2 class="bannerText1">{{defaultImage.subname}}</h2>
                                 <p class="bannerText2">{{defaultImage.discription}}</p>
                                 <a href="/shop" class="primary-btn">Shop now <span class="arrow_right"></span></a>
-                                <div class="hero__social">
-                                    <a href="#"><i class="fa fa-facebook"></i></a>
-                                    <a href="#"><i class="fa fa-twitter"></i></a>
-                                    <a href="#"><i class="fa fa-pinterest"></i></a>
-                                    <a href="#"><i class="fa fa-instagram"></i></a>
-                                </div>
+                                
                             </div>
                         </div>
                     </div>
@@ -227,12 +227,7 @@
                                 <h2 class="bannerText4">{{subname}}</h2>
                                 <p class="bannerText3">{{discription}}</p>
                                 <a href="/shop" class="primary-btn">Shop now <span class="arrow_right"></span></a>
-                                <div class="hero__social">
-                                    <a href="#"><i class="fa fa-facebook"></i></a>
-                                    <a href="#"><i class="fa fa-twitter"></i></a>
-                                    <a href="#"><i class="fa fa-pinterest"></i></a>
-                                    <a href="#"><i class="fa fa-instagram"></i></a>
-                                </div>
+                                
                             </div>
                         </div>
                     </div>

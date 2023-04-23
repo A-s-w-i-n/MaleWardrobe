@@ -117,14 +117,14 @@
     <!-- Header Section End -->
 
     <!-- Shop Details Section Begin -->
-    <section class="shop-details">
-        <div class="product__details__pic">
+    <section style="width: 100%;" class="shop-details">
+        <div style="width: 100%;" class="product__details__pic">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="product__details__breadcrumb">
-                            <a href="./index.html">Home</a>
-                            <a href="./shop.html">Shop</a>
+                            <a href="/">Home</a>
+                            <a href="/shop">Shop</a>
                             <span>Product Details</span>
                         </div>
                     </div>
@@ -154,11 +154,11 @@
                         </script>
                     </div>
                     {{!-- main image --}}
-                    <div class="col-lg-6 col-md-9">
-                        <div class="tab-content">
-                            <div class="tab-pane active" id="tabs-1" role="tabpanel">
-                                <div class="zoom product__details__pic__item">
-                                    <img style="position: relative;left: 11%;" src="productimages/{{image.[0]}}" id="imageview" alt="">
+                    <div class="col-lg-6 col-md-12 col-sm-12">
+                        <div class="tab-content" style="width: 100%;">
+                            <div class="tab-pane active"  id="tabs-1" role="tabpanel">
+                               
+                                    <img style="position: relative;width: 100%;" src="productimages/{{image.[0]}}" id="imageview" alt="">
                                 </div>
                             </div>
                         </div>
@@ -170,31 +170,14 @@
                 <div class="container">
                     <div class="row d-flex justify-content-center">
                         <form action="/addToCart/{{productId}}" method="post">
-                            <div class="col-lg-8 col-md-6 col-sm-12" style="width: 60%;position: relative;left: 17%;">
-                                <div  style="position: relative;left: 24%; width: 70%;" class="product__details__text ">
-                                    <h4>{{productName}}</h4>
+                            <div class="col-lg-8 col-md-6 col-sm-12" style="width: 60%;">
+                                <div  style="position: relative;left: 40%; width: 100%;" class="product__details__text ">
+                                    <h4 >{{productName}}</h4>
                                    
                                     <h3>₹{{price}} </h3>
                                     <p>{{discription}}</p>
                                     {{/each}}
-                                    <div class="product__details__option">
-                                        <div class="product__details__option__size">
-                                            <span>Size:</span>
-                                            <label for="xxl">xxl
-                                                <input type="radio" id="xxl">
-                                            </label>
-                                            <label class="active" for="xl">xl
-                                                <input type="radio" id="xl">
-                                            </label>
-                                            <label for="l">l
-                                                <input type="radio" id="l">
-                                            </label>
-                                            <label for="sm">s
-                                                <input type="radio" id="sm">
-                                            </label>
-                                        </div>
-                                        
-                                    </div>
+                                    
                                     <div class="product__details__cart__option">
                                        
 
@@ -302,7 +285,7 @@
             </div>
             <div class="row">
             {{#each relatesProduct}}
-                <div class="col-lg-3 col-md-6 col-sm-6 col-sm-6">
+                <div class="col-lg-3 col-md-6 col-sm-6 ">
                     <div class="product__item">
                         <div  class="product__item__pic set-bg" data-setbg=""><img style="height: 110%; width: 100%;" src="productimages/{{image.[0]}}" alt="">
                             <span class="label">New</span>
@@ -314,26 +297,9 @@
                         </div>
                         <div class="product__item__text">
                             <h6>{{productName}}</h6>
-                            <a href="#" class="add-cart">+ Add To Cart</a>
-                            <div class="rating">
-                                <i class="fa fa-star-o"></i>
-                                <i class="fa fa-star-o"></i>
-                                <i class="fa fa-star-o"></i>
-                                <i class="fa fa-star-o"></i>
-                                <i class="fa fa-star-o"></i>
-                            </div>
+                            
                             <h5>₹{{price}}</h5>
-                            <div class="product__color__select">
-                                <label for="pc-1">
-                                    <input type="radio" id="pc-1">
-                                </label>
-                                <label class="active black" for="pc-2">
-                                    <input type="radio" id="pc-2">
-                                </label>
-                                <label class="grey" for="pc-3">
-                                    <input type="radio" id="pc-3">
-                                </label>
-                            </div>
+                           
                         </div>
                     </div>
                 </div>
