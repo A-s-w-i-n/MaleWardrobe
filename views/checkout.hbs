@@ -48,10 +48,14 @@
             </div>
         </div>
         <div class="offcanvas__nav__option">
-            <a href="#" class="search-switch"><img src="img/icon/search.png" alt=""></a>
+           <a href="/profile"><div class="price"> <i class="fa-regular fa-user"></i></div></a>
             <a href="#"><img src="img/icon/heart.png" alt=""></a>
             <a href="#"><img src="img/icon/cart.png" alt=""> <span>0</span></a>
-            <div class="price">$0.00</div>
+            {{#if user}}
+            <a class="text-dark" href="/logout">Logout</a>
+            {{else}}
+            <a class="text-dark" href="/login">Login</a>
+            {{/if}}
         </div>
         <div id="mobile-menu-wrap"></div>
         <div class="offcanvas__text">
@@ -506,7 +510,7 @@
 
             success:(response)=>{
                 if(response.PaymentSuccsess){
-                    
+                     location.href="/placeOrder"
                 }else{
                      location.href="/placeOrder"
                 }

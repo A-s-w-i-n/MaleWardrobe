@@ -57,6 +57,11 @@
             <a href="/profile"><div class="price"> <i class="fa-regular fa-user"></i></div></a>
             <a href="/wishlist"><img src="img/icon/heart.png" alt=""></a>
             <a href="/cart"><img src="img/icon/cart.png" alt=""> <span>0</span></a>
+               {{#if user}}
+            <a class="text-dark" href="/logout">Logout</a>
+            {{else}}
+            <a class="text-dark" href="/login">Login</a>
+            {{/if}}
             
         </div>
         <div id="mobile-menu-wrap"></div>

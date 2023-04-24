@@ -1130,21 +1130,23 @@ const paymentVerification = async function (req, res, next) {
 
     user = req.session.user
     let userCoupon=req.session.couponcode
+    let PaymentSuccsess
     // let orders=req.session.orders
   
     if (user) {
-      raz = req.body
-  
+    let  raz = req.body
+
+  let hmac=crypto.createHmac('sha256','s8SJ94K8GnWBuSxiirgrWxy9')
       hmac.update(raz['payment[razorpay_order_id]'] + '|' + raz['payment[razorpay_payment_id]'])
       hmac = hmac.digest('hex')
       if (hmac == raz['payment[razorpay_signature]']) {
        let order = orders
   
         order.orderdate = new Date()
-        order.orderdate = order.orderdate.toLocalString()
+        order.orderdate = order.orderdate
         let dt = new Date()
         order.deliveryDate = new Date(dt.setDate(dt.getDate() + 7))
-        order.deliveryDate = order.deliveryDate.toLocalString()
+        order.deliveryDate = order.deliveryDate
         order.products[0].product.paymentId = uuid()
   
   
@@ -1153,7 +1155,7 @@ const paymentVerification = async function (req, res, next) {
   
         }
         await orderinfo.insertMany([orders])
-        await orderinfo.update({user:req.session.user},{$set:{userUsedCoupon:userCoupon}})
+        await orderinfo.updateOne({user:req.session.user},{$set:{userUsedCoupon:userCoupon}})
         await cartInfo.deleteOne({ user: req.session.user.name })
         req.session.user.order = null
         res.json({ PaymentSuccsess})
@@ -1161,7 +1163,7 @@ const paymentVerification = async function (req, res, next) {
   
       }
       
-      res.redirect('/')
+    
     }
   } catch (error) {
     console.log(error);
