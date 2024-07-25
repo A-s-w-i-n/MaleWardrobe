@@ -1,6 +1,5 @@
 const admininfo = require('../model/adminmodel').adminlogin
 const productinfo = require('../model/productmodel').addnewproduct
-const { AwsInstance } = require('twilio/lib/rest/accounts/v1/credential/aws')
 const { v4: uuidv4 } = require('uuid')
 const categoryinfo = require('../model/categorymodel').addnewcategory
 const subcategoryinfo = require('../model/subcategory').addsubcategory

@@ -3,7 +3,6 @@ const otpvalidation = require("./otp");
 const otpval = require("./otp");
 // const { search } = require('../routes/users')
 const { categoryadd } = require("./admincontroller");
-const { Grant } = require("twilio/lib/jwt/AccessToken");
 const { checkout } = require("../routes/admin");
 const { uuid } = require("uuidv4");
 const userinfo = require("../model/usermodel").usersignin;
